@@ -1,0 +1,15 @@
+{
+  "name": "disqus-server",
+  "version": "1.0.0",
+  "description": "disqus-server",
+  "main": "index.js",
+  "scripts": {
+    "run": "ts-node index.ts"
+  },
+  "keywords": [
+    "disqus",
+    "web"
+  ],
+  "author": "atlemagnussen",
+  "license": "ISC"
+}
