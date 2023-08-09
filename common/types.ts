@@ -1,3 +1,24 @@
 export interface DisqusCommentItem {
-    message: string
+    message: string,
+    forum: string
+    thread: string
+}
+
+export interface DisqusForumInfo {
+    title: string
+    clean_title: string
+    signedLink: string
+    link: string
+    slug: string
+    posts: number
+}
+
+export interface SearchRequest {
+    forum: string
+    author: string
+}
+
+export interface ForumRequest {
+    forum: string
+    thread: string
 }

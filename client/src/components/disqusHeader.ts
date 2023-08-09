@@ -1,10 +1,5 @@
 import { LitElement, css, html } from "lit"
-import { customElement, property } from "lit/decorators.js"
-
-interface NamedLink {
-    name: string
-    path: string
-}
+import { customElement } from "lit/decorators.js"
 
 @customElement('disqus-header')
 export class DirHeader extends LitElement {
@@ -62,7 +57,6 @@ export class DirHeader extends LitElement {
                 <a href="/">
                     <home-button></home-button>
                 </a>
-                <!-- <search-button @click=${this.openSearchDialog}></search-button> -->
                 <h2>Disqus</h2>
                 
             </div>

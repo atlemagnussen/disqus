@@ -1,35 +1,47 @@
 import path from "path"
 import express from "express"
-
+import { getComments } from "./mongo"
+import { getForumLink } from "./disqus"
+import bodyParser from "body-parser"
+import { ForumRequest, SearchRequest } from "@common/types"
+import config from "./config"
 
 const app = express()
-// app.use(bodyParser.json())
+app.use(bodyParser.json())
 
 const rootFolder = __dirname
 console.log("rootFolder", rootFolder)
 const client = path.resolve("..", "client/dist")
 const clientIndex = path.resolve(client, "index.html")
 
-app.get("/author/*", (req, res) => {
+app.post("/getcommentsby", async (req, res) => {
     let fullpath = decodeURI(req.path)
     console.log("requested file path", fullpath)
-    return res.send({"hello": "world"})
+
+    const searchReq = req.body as SearchRequest
+
+    const docs = await getComments("disqus", searchReq.forum, searchReq.author)
+    return res.send(docs)
+})
+
+app.post("/forumlink", async (req, res) => {
+    let fullpath = decodeURI(req.path)
+    console.log("requested file path", fullpath)
+
+    const forumReq = req.body as ForumRequest
+
+    const link = await getForumLink(forumReq.forum, forumReq.thread)
+    return res.send(link)
 })
 
 app.use(express.static(client))
 
 app.get('*', function (req, res) {
+    console.log(req.path)
     res.sendFile(clientIndex)
 })
 
-// app.get('*', (req, res) => {
-//     let path = decodeURI(req.path)
-//     console.log("path*", path)
-//     const html = generateHtmlFromDir(path)
-//     res.send(html)
-// })
-
-let port = 5000
+let port = config.port ? config.port : 5000
 app.listen(port, '0.0.0.0', () => {
     console.log(`[server]: Server is running at http://localhost:${port}`)
 })
