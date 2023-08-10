@@ -1,4 +1,4 @@
-import config from "./config.js"
+import config from "./config"
 
 import log4js from "log4js"
 
@@ -20,7 +20,7 @@ const log4jsConfig = {
     }
 }
 
-log4js.configure(log4jsConfig);
+log4js.configure(log4jsConfig)
 
-export const logger = log4js.getLogger('server');
-logger.info('Init logger');
+export const logger = log4js.getLogger('server')
+logger.debug('Init logger')
