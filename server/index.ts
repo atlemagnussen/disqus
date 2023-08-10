@@ -1,9 +1,9 @@
 import path from "path"
 import express from "express"
-import { getComments } from "./mongo"
+import { getCommentsByAuthor, getCommentsByThread } from "./mongo"
 import { getForumLink } from "./disqus"
 import bodyParser from "body-parser"
-import { ForumRequest, SearchRequest } from "@common/types"
+import { DisqusCommentItem, ForumRequest, SearchRequest } from "@common/types"
 import config from "./config"
 
 const app = express()
@@ -18,9 +18,14 @@ app.post("/getcommentsby", async (req, res) => {
     let fullpath = decodeURI(req.path)
     console.log("requested file path", fullpath)
 
+    let docs: DisqusCommentItem[] = []
     const searchReq = req.body as SearchRequest
-
-    const docs = await getComments("disqus", searchReq.forum, searchReq.author)
+    if (searchReq.author) {
+        docs = await getCommentsByAuthor("disqus", searchReq.forum, searchReq.author)
+    } else if(searchReq.thread) {
+        docs = await getCommentsByThread("disqus", searchReq.forum, searchReq.thread)
+    }
+    
     return res.send(docs)
 })
 

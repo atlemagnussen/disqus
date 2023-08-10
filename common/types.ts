@@ -15,7 +15,8 @@ export interface DisqusForumInfo {
 
 export interface SearchRequest {
     forum: string
-    author: string
+    thread?: string
+    author?: string
 }
 
 export interface ForumRequest {
