@@ -1,19 +1,26 @@
 import { logger } from "./logger"
 import { getPostsFromForum } from "./disqus"
+import { DisqusPostsResponse } from "@common/types"
 
 logger.info("crawler starting")
 
 
-function crawl() {
-    getPostsFromForum("itavisen").then(res => {
-        console.log(res)
-    })
-    .catch(er => {
-        console.error(er)
-    })
-    .finally(() => {
-        console.log("done")
-    })
+async function crawl() {
+    const res = await getPosts()
+
+
+    
 }
 
-crawl()
+async function getPosts() {
+    const res = await getPostsFromForum("itavisen")
+    const resJson = JSON.parse(res) as DisqusPostsResponse
+    return resJson
+}
+
+crawl().catch(er => {
+    logger.error(er)
+})
+.finally(() => {
+    logger.info("done")
+})

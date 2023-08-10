@@ -1,3 +1,4 @@
+import { logger } from "./logger"
 import { getHttps } from "./httpPromise"
 import config from "./config"
 
@@ -24,9 +25,14 @@ export const getForumLink = async (forum: string, thread: string) => {
     }
 }
 
-export const getPostsFromForum = async (forum: string) => {
-    const url = `${BASEURL}${POSTSURL}?api_key=${config.apiKey}&forum=${forum}`
+export const getPostsFromForum = async (forum: string, cursor?: string) => {
+    logger.info(`Fetching for ${forum}`)
+    let url = `${BASEURL}${POSTSURL}?api_key=${config.apiKey}&forum=${forum}`
+    if (cursor)
+        url = `${url}&cursor=${cursor}`
 
+    logger.info(`Fetching url ${url}`)
+    
     const res = await getHttps(url)
     return res
 }

@@ -30,3 +30,40 @@ export interface ForumRequest {
     forum: string
     thread: string
 }
+
+export interface DisqusOriginalComment {
+    forum: string
+    thread: string
+    id: string
+    parent: string
+    message: string
+    raw_message: string
+    createdAt: string
+    isEdited: boolean
+    author: DisqusAuthor
+    likes: number
+    dislikes: number
+    isSpam: boolean
+    isDeletedByAuthor: boolean
+    isDeleted: boolean
+    isFlagged: boolean
+    isAtFlagLimit: boolean
+    isHighlighted: boolean
+    isApproved: boolean
+    isNewUserNeedsApproval: boolean
+}
+
+export interface DisqusCursor {
+    hasNext: boolean
+    next: string
+    hasPrev: boolean
+    prev: string
+    id: string
+    more: boolean
+}
+
+export interface DisqusPostsResponse {
+    cursor: DisqusCursor
+    code: number
+    response: DisqusOriginalComment[]
+}
