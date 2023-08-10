@@ -8,7 +8,6 @@ const client = new MongoClient(config.mongoConnStr)
 
 export const getComments = async (dbName: string, collName: string, author: string) => {
     await client.connect()
-    console.log("connected to", client)
 
     const db = client.db(dbName)
     const collection = db.collection(collName)
@@ -18,6 +17,7 @@ export const getComments = async (dbName: string, collName: string, author: stri
         .toArray()
     console.log("filteredDocs length=", filteredDocs.length)
 
+    client.close()
     return filteredDocs as DisqusCommentItem[]
 
 }
