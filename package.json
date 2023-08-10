@@ -6,6 +6,7 @@
     "build:web": "cd client && npm run build && cd ..",
     "server": "cd server && npm run prod && cd ..",
     "prod": "npm run build:web && npm run server",
+    "crawler": "cd server && npm run crawler && cd ..",
     "ts": "tsc --build tsconfig.json"
   },
   "keywords": [
@@ -28,6 +29,7 @@
     "express": "^4.18.2",
     "lit": "^2.8.0",
     "lodash-es": "^4.17.21",
+    "log4js": "^6.9.1",
     "mongodb": "^5.7.0"
   }
 }

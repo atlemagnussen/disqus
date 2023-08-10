@@ -6,10 +6,10 @@ import config from "./config"
 const client = new MongoClient(config.mongoConnStr)
 const projectFields = { "message": 1, "forum": 1, "thread": 1, "createdAt": 1, "author": 1}
 
-export const getCommentsByAuthor = async (dbName: string, collName: string, author: string) => {
+export const getCommentsByAuthor = async (collName: string, author: string) => {
     await client.connect()
 
-    const db = client.db(dbName)
+    const db = client.db(config.dbName)
     const collection = db.collection(collName)
 
     const filteredDocs = await collection.find({ "author.username": author })
@@ -21,10 +21,10 @@ export const getCommentsByAuthor = async (dbName: string, collName: string, auth
     return filteredDocs as DisqusCommentItem[]
 }
 
-export const getCommentsByThread = async (dbName: string, collName: string, thread: string) => {
+export const getCommentsByThread = async (collName: string, thread: string) => {
     await client.connect()
 
-    const db = client.db(dbName)
+    const db = client.db(config.dbName)
     const collection = db.collection(collName)
 
     const filteredDocs = await collection.find({ thread })

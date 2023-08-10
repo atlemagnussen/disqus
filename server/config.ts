@@ -11,16 +11,23 @@ console.log(`environment: ${environment}, envFilePath: ${envFilePath}`)
 const config = dotenv.config({ path: envFilePath})
 console.log(config)
 
-const portStr = process.env.PORT as string
+const portStr = getSetting("PORT")
 const port = portStr ? parseInt(portStr) : 8000
 
-const apiKey = process.env.APIKEY as string
+const apiKey = getSetting("APIKEY")
+const mongoConnStr = getSetting("MONGO")
+const dbName = getSetting("DBNAME")
 
-const mongoConnStr = process.env.MONGO as string
+const logFilePath = getSetting("LOGFILE")
 
 export default {
     port,
     apiKey,
-    mongoConnStr
+    mongoConnStr,
+    dbName,
+    logFilePath
 }
 
+function getSetting(name: string) {
+    return process.env[name] as string
+}
