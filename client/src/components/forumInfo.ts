@@ -19,6 +19,9 @@ export class ForumInfo extends LitElement {
         a, a:visited {
             color: var(--link-color);
         }
+        h3 {
+            color: var(--yellow);
+        }
     `
 
     @property({attribute: true})
@@ -51,7 +54,7 @@ export class ForumInfo extends LitElement {
                             Title: ${this.forumInfo.title}<br>
                         </h3>
                         <p>
-                            Posts: ${this.forumInfo.posts}<br>
+                            Disqus Total comments: ${this.forumInfo.posts}<br>
                             <a href="${this.forumInfo.signedLink}" target="_blank">Disqus link</a><br>
                             <a href="${this.forumInfo.link}" target="_blank">Direct link</a>
                         </p>

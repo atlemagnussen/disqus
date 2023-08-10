@@ -23,6 +23,13 @@ export class DisqusComment extends LitElement {
         a, a:visited {
             color: var(--magenta);
         }
+        .userinfo {
+            color: var(--cyan);
+        }
+        datetime-viewer {
+            font-weight: bolder;
+            color: var(--cyan-dark);
+        }
         @media only screen and (max-width: 640px) {
             .wrapper {
                 width: 100%;
@@ -44,10 +51,30 @@ export class DisqusComment extends LitElement {
 
     @property({attribute: false})
     comment: DisqusCommentItem = { message: "", forum: "", thread: "" }
+
+    @property({attribute: false})
+    showlink = false
+
     render() {
         
         return html`
-            <div class="link" @click=${this.openForumDialog}>${this.comment.forum} thread id ${this.comment.thread}</div>
+            ${this.showlink ? 
+                html`
+                    <div class="link">
+                        <a href="/thread/${this.comment.forum}/${this.comment.thread}">
+                            Open thread ${this.comment.thread}
+                        </a>
+                    </div>
+                `
+                :
+                html`
+                    <div class="userinfo">
+                        <datetime-viewer date="${this.comment.createdAt!}"></datetime-viewer>
+                        <span>${this.comment.author?.name} (${this.comment.author?.username})</span>
+                    </div>
+                `
+            }
+            
             <article>
                 ${unsafeHTML(this.comment.message)}
             </article>

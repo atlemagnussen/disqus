@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <base href="/">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,18 @@
     <script type="module" src="./app.ts"></script>
 </head>
 <body>
-    <disqus-app></disqus-app>
+    <div id="app">
+        <header>
+            <disqus-header></disqus-header>
+        </header>
+
+        <main>
+            <router-slot></router-slot>
+        </main>
+
+        <footer>
+            <span></span>
+        </footer>
+    </div>
 </body>
 </html>

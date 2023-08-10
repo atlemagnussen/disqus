@@ -4,7 +4,7 @@ import config from "./config"
 
 // const url = "mongodb://localhost:27017"
 const client = new MongoClient(config.mongoConnStr)
-const projectFields = { "message": 1, "forum": 1, "thread": 1}
+const projectFields = { "message": 1, "forum": 1, "thread": 1, "createdAt": 1, "author": 1}
 
 export const getCommentsByAuthor = async (dbName: string, collName: string, author: string) => {
     await client.connect()

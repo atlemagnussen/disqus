@@ -2,6 +2,13 @@ export interface DisqusCommentItem {
     message: string,
     forum: string
     thread: string
+    createdAt?: string
+    author?: DisqusAuthor
+}
+
+export interface DisqusAuthor {
+    username: string
+    name: string
 }
 
 export interface DisqusForumInfo {

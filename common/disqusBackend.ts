@@ -8,6 +8,13 @@ export function getPostsByAuthor(forum: string, author: string) {
     return http.post<DisqusCommentItem[]>("getcommentsby", data)
 }
 
+export function getPostsByThread(forum: string, thread: string) {
+    const data: SearchRequest = {
+        forum, thread
+    }
+    return http.post<DisqusCommentItem[]>("getcommentsby", data)
+}
+
 export function getForumInfo(forum: string, thread: string) {
     const data: ForumRequest = {
         forum, thread

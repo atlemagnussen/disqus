@@ -2,10 +2,10 @@ import { DisqusCommentItem } from "@common/types"
 import { LitElement, css, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
 import { getPostsByAuthor } from "@common/disqusBackend"
+import { scrollToTop } from "@app/services/helpers"
 
-
-@customElement('comments-view')
-export class CommentsView extends LitElement {
+@customElement('search-view')
+export class SearchView extends LitElement {
     static styles = css`
         :host {
             display: flex;
@@ -35,6 +35,11 @@ export class CommentsView extends LitElement {
         }
     `
 
+    connectedCallback(): void {
+        super.connectedCallback()
+        scrollToTop()
+    }
+
     private userName = "RadonReady"
     private forum = "itavisen"
 
@@ -55,6 +60,8 @@ export class CommentsView extends LitElement {
         this.comments = res
     }
     
+    showLink = true
+
     @state()
     comments: DisqusCommentItem[] = []
 
@@ -66,7 +73,7 @@ export class CommentsView extends LitElement {
                     <input placeholder="author username" type="text" value="RadonReady" @input=${this.inputChangeEvent} @keypress=${this.keyPressEvent} />
                     <select @change=${this.selectChangeEvent}>
                         <option value="itavisen">itavisen</option>
-                        <option value="digi">digi</option>
+                        <option value="digi-no">digi</option>
                     </select>
                     <search-button @click=${this.search}></search-button>
                 </div>
@@ -82,7 +89,7 @@ export class CommentsView extends LitElement {
             return html`<h2>No entries</h2>`
         
         return this.comments.map(c => {
-            return html`<disqus-comment .comment=${c}></disqus-comment>`
+            return html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`
         })
     }
 }
