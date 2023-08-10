@@ -12,7 +12,8 @@ export const getForumLink = async (forum: string, thread: string) => {
     const url = `${BASEURL}${THREADSURL}?api_key=${config.apiKey}&forum=${forum}&thread=${thread}`
     const res = await getHttps(url)
     if (res) {
-        if (res.response && Array.isArray(res.response)) {
+        const resJson = JSON.parse(res)
+        if (resJson.response && Array.isArray(resJson.response)) {
             const thread = res.response[0]
             return thread
         } else {

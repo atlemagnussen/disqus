@@ -1,7 +1,6 @@
 import { logger } from "./logger"
 import { getPostsFromForum } from "./disqus"
 
-
 logger.info("crawler starting")
 
 
