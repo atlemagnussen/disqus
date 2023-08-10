@@ -42,7 +42,7 @@ export function post(pUrl: string, data: any) {
                 handle(res, resolve, reject)
             }).on('error', (e) => {
                 reject(`Got error: ${e.message}`)
-            });
+            })
             req.end(body)
         } catch (err) {
             reject(err)
@@ -74,8 +74,7 @@ function handle(res: http.IncomingMessage, resolve: (data:any)=>void, reject:(ms
                 throw new Error(errmsg)
             }
         } else {
-            const parsedData = JSON.parse(rawData)
-            resolve(parsedData)
+            resolve(rawData)
         }
     })
 }
