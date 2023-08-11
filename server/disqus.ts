@@ -1,6 +1,7 @@
 import { logger } from "./logger"
 import { getHttps } from "./httpPromise"
 import config from "./config"
+import { DisqusThreadResponse } from "@common/types"
 
 const BASEURL = "https://disqus.com/api/3.0"
 const THREADSURL = "/forums/listThreads.json"
@@ -13,9 +14,9 @@ export const getForumLink = async (forum: string, thread: string) => {
     const url = `${BASEURL}${THREADSURL}?api_key=${config.apiKey}&forum=${forum}&thread=${thread}`
     const res = await getHttps(url)
     if (res) {
-        const resJson = JSON.parse(res)
-        if (resJson.response && Array.isArray(resJson.response)) {
-            const thread = res.response[0]
+        const resJson = JSON.parse(res) as DisqusThreadResponse
+        if (resJson.response && Array.isArray(resJson.response) && resJson.response.length > 0) {
+            const thread = resJson.response[0]
             return thread
         } else {
             throw new Error("no array")

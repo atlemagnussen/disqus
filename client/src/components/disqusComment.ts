@@ -26,6 +26,12 @@ export class DisqusComment extends LitElement {
         .userinfo {
             color: var(--cyan);
         }
+        .likes {
+            color: var(--winamp-green);
+        }
+        .downvotes {
+            color: var(--cardinal);
+        }
         datetime-viewer {
             font-weight: bolder;
             color: var(--cyan-dark);
@@ -50,7 +56,7 @@ export class DisqusComment extends LitElement {
     }
 
     @property({attribute: false})
-    comment: DisqusCommentItem = { message: "", forum: "", thread: "" }
+    comment: DisqusCommentItem = { message: "", forum: "", thread: "", likes: 0, dislikes: 0 }
 
     @property({attribute: false})
     showlink = false
@@ -67,14 +73,14 @@ export class DisqusComment extends LitElement {
                     </div>
                 `
                 :
-                html`
-                    <div class="userinfo">
-                        <datetime-viewer date="${this.comment.createdAt!}"></datetime-viewer>
-                        <span>${this.comment.author?.name} (${this.comment.author?.username})</span>
-                    </div>
-                `
+                html``
             }
-            
+            <div class="userinfo">
+                <datetime-viewer date="${this.comment.createdAt!}"></datetime-viewer>
+                <span>${this.comment.author?.name} (${this.comment.author?.username})</span>
+                <span class="likes">Likes: ${this.comment.likes}</span>
+                <span class="downvotes">Downvotes: ${this.comment.dislikes}</span>
+            </div>
             <article>
                 ${unsafeHTML(this.comment.message)}
             </article>

@@ -4,6 +4,8 @@ export interface DisqusCommentItem {
     thread: string
     createdAt?: string
     author?: DisqusAuthor
+    likes: number
+    dislikes: number
 }
 
 export interface DisqusAuthor {
@@ -67,4 +69,10 @@ export interface DisqusPostsResponse {
     cursor: DisqusCursor
     code: number
     response: DisqusOriginalComment[]
+}
+
+export interface DisqusThreadResponse {
+    cursor: DisqusCursor
+    code: number
+    response: DisqusForumInfo[]
 }

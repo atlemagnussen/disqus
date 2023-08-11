@@ -5,7 +5,7 @@ import config from "./config"
 
 // const url = "mongodb://localhost:27017"
 const client = new MongoClient(config.mongoConnStr)
-const projectFields = { "message": 1, "forum": 1, "thread": 1, "createdAt": 1, "author": 1}
+const projectFields = { "message": 1, "forum": 1, "thread": 1, "createdAt": 1, "author": 1, "likes": 1, "dislikes": 1}
 
 export const getCommentsByAuthor = async (collName: string, author: string) => {
     await client.connect()
@@ -14,6 +14,7 @@ export const getCommentsByAuthor = async (collName: string, author: string) => {
     const collection = db.collection(collName)
 
     const filteredDocs = await collection.find({ "author.username": author })
+        .sort({ "createdAt": -1})
         .project(projectFields)
         .toArray()
     
