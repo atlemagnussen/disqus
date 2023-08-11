@@ -1,5 +1,5 @@
 import { logger } from "./logger"
-import { Collection, Document, MongoClient } from "mongodb"
+import { Collection, Document, MongoClient, UpdateOptions } from "mongodb"
 import { DisqusCommentItem, DisqusOriginalComment } from "@common/types"
 import config from "./config"
 
@@ -60,7 +60,7 @@ export async function SaveComment(collName: string, comment: DisqusOriginalComme
 }
 
 async function UpdateComment(coll: Collection<Document>, comment: DisqusOriginalComment) {
-    const options = { upsert: true }
+    const options: UpdateOptions = { upsert: true }
     const filter = { id: comment.id };
     const updateDoc = {
         $set: {
