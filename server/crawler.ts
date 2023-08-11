@@ -13,13 +13,13 @@ async function crawl() {
     const result = await processFetchedPosts(res)
     logger.info("result of saving posts", result)
     
-    while (res.cursor && res.cursor.hasNext) {
-        logger.info(`Has cursor next: ${res.cursor.next}`)
+    // while (res.cursor && res.cursor.hasNext) {
+    //     logger.info(`Has cursor next: ${res.cursor.next}`)
 
-        res = await getPosts(res.cursor.next)
-        const result = await processFetchedPosts(res)
-        logger.info("result of saving posts", result)
-    }
+    //     res = await getPosts(res.cursor.next)
+    //     const result = await processFetchedPosts(res)
+    //     logger.info("result of saving posts", result)
+    // }
 }
 
 async function getPosts(cursor?: string) {
