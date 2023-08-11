@@ -1,4 +1,5 @@
-import { MongoClient } from "mongodb"
+import { logger } from "./logger"
+import { Collection, Document, MongoClient } from "mongodb"
 import { DisqusCommentItem, DisqusOriginalComment } from "@common/types"
 import config from "./config"
 
@@ -15,7 +16,8 @@ export const getCommentsByAuthor = async (collName: string, author: string) => {
     const filteredDocs = await collection.find({ "author.username": author })
         .project(projectFields)
         .toArray()
-    console.log("filteredDocs length=", filteredDocs.length)
+    
+    logger.info("filteredDocs length=", filteredDocs.length)
 
     client.close()
     return filteredDocs as DisqusCommentItem[]
@@ -30,7 +32,8 @@ export const getCommentsByThread = async (collName: string, thread: string) => {
     const filteredDocs = await collection.find({ thread })
         .project(projectFields)
         .toArray()
-    console.log("filteredDocs length=", filteredDocs.length)
+    
+    logger.info("filteredDocs length=", filteredDocs.length)
 
     client.close()
     return filteredDocs as DisqusCommentItem[]
@@ -48,6 +51,42 @@ export async function SaveComment(collName: string, comment: DisqusOriginalComme
     if (exists && !isOpenForEdit)
         return false
 
-    const res = await coll.insertOne(comment)
-    return true
+    if (exists)
+        UpdateComment(coll, comment)
+    else
+        await coll.insertOne(comment)
+    
+        return true
+}
+
+async function UpdateComment(coll: Collection<Document>, comment: DisqusOriginalComment) {
+    const options = { upsert: true }
+    const filter = { id: comment.id };
+    const updateDoc = {
+        $set: {
+            message: comment.message,
+            raw_message: comment.raw_message
+        }
+    }
+    const result = await coll.updateOne(filter, updateDoc, options)
+    logger.info(`Update:: Matched ${result.matchedCount} docs, Modified ${result.modifiedCount} docs`)
+    return result
+}
+
+export async function findDuplicates(collName: string) {
+    await client.connect()
+
+    const db = client.db(config.dbName)
+    const coll = db.collection(collName)
+
+    const aggregationPipeline = [
+        {"$group" : { "_id": "$id", "count": { "$sum": 1 } } },
+        {"$match": {"_id" :{ "$ne" : null } , "count" : {"$gt": 1} } }, 
+        {"$project": {"name" : "$_id", "_id" : 0} }
+    ]
+    const duplicatesCursor = coll.aggregate(aggregationPipeline)
+
+    for await (const doc of duplicatesCursor) {
+        logger.info(doc)
+    }
 }

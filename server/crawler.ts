@@ -8,16 +8,22 @@ logger.info("crawler starting")
 const FORUM = "itavisen"
 
 async function crawl() {
-    const res = await getPosts()
+    let res = await getPosts()
 
     const result = await processFetchedPosts(res)
     logger.info("result of saving posts", result)
     
-    logger.info("cursor", res.cursor)
+    while (res.cursor && res.cursor.hasNext) {
+        logger.info(`Has cursor next: ${res.cursor.next}`)
+
+        res = await getPosts(res.cursor.next)
+        const result = await processFetchedPosts(res)
+        logger.info("result of saving posts", result)
+    }
 }
 
-async function getPosts() {
-    const res = await getPostsFromForum(FORUM)
+async function getPosts(cursor?: string) {
+    const res = await getPostsFromForum(FORUM, cursor)
     const resJson = JSON.parse(res) as DisqusPostsResponse
     return resJson
 }
