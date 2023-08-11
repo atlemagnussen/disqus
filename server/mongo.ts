@@ -21,10 +21,8 @@ const projectFields = {
 }
 
 export const searchComments = async (search: SearchRequest) => {
-    await client.connect()
-
-    const db = client.db(config.dbName)
-    const collection = db.collection(search.forum)
+    
+    const coll = await getCollection(search.forum)
 
     const match = getMatchQuery(search)
     const aggregate = [
@@ -40,7 +38,7 @@ export const searchComments = async (search: SearchRequest) => {
             }
         }
     ] 
-    const cursor = collection.aggregate(aggregate)
+    const cursor = coll.aggregate(aggregate)
 
     const docs = await cursor.toArray() as DisqusCommentItem[]
     client.close()
@@ -74,10 +72,8 @@ function getMatchQuery(s: SearchRequest) {
 }
 
 export const getCommentsByAuthor = async (collName: string, userName: string) => {
-    await client.connect()
-
-    const db = client.db(config.dbName)
-    const collection = db.collection(collName)
+    
+    const coll = await getCollection(collName)
 
     const match = { "author.username": userName }
 
@@ -94,7 +90,7 @@ export const getCommentsByAuthor = async (collName: string, userName: string) =>
             }
         }
     ] 
-    const cursor = collection.aggregate(aggregate)
+    const cursor = coll.aggregate(aggregate)
 
     const docs = await cursor.toArray() as DisqusCommentItem[]
     client.close()
@@ -102,10 +98,8 @@ export const getCommentsByAuthor = async (collName: string, userName: string) =>
 }
 
 export const getCommentsByThread = async (collName: string, thread: string) => {
-    await client.connect()
-
-    const db = client.db(config.dbName)
-    const collection = db.collection(collName)
+    
+    const coll = await getCollection(collName)
     
     const match = { thread }
 
@@ -122,18 +116,15 @@ export const getCommentsByThread = async (collName: string, thread: string) => {
             }
         }
     ] 
-    const cursor = collection.aggregate(aggregate)
+    const cursor = coll.aggregate(aggregate)
 
     const docs = await cursor.toArray() as DisqusCommentItem[]
-    client.close()
     return docs
 }
 
 export async function SaveComment(collName: string, comment: DisqusOriginalComment) {
-    await client.connect()
-
-    const db = client.db(config.dbName)
-    const coll = db.collection(collName)
+    
+    const coll = await getCollection(collName)
 
     const exists = await coll.findOne({id: comment.id})
     const isOpenForEdit = new Date(comment.editableUntil) > new Date()
@@ -164,10 +155,8 @@ async function UpdateComment(coll: Collection<Document>, comment: DisqusOriginal
 }
 
 export async function findDuplicates(collName: string) {
-    await client.connect()
-
-    const db = client.db(config.dbName)
-    const coll = db.collection(collName)
+    
+    const coll = await getCollection(collName)
 
     const aggregationPipeline = [
         {"$group" : { "_id": "$id", "count": { "$sum": 1 } } },
@@ -189,10 +178,8 @@ export async function findDuplicates(collName: string) {
 }
 
 export async function removeDuplicates(collName: string, ids: string[]) {
-    await client.connect()
-
-    const db = client.db(config.dbName)
-    const coll = db.collection(collName)
+    
+    const coll = await getCollection(collName)
 
     for (let i = 0; i < ids.length; i++) {
         let id = ids[i]
@@ -200,4 +187,35 @@ export async function removeDuplicates(collName: string, ids: string[]) {
         const res = await coll.deleteOne({id})
         logger.info(`Removed ${res.deletedCount}`)
     }
+}
+
+export async function getCommentStats(collName: string) {
+    const coll = await getCollection(collName)
+
+    const aggr = [
+        {
+            "$group": {
+                _id: {
+                    "$dateToString": { 
+                        format: "%Y-%m-%d", 
+                        date: "$date"
+                    } 
+                }, 
+                count: {
+                    $sum: 1
+                }
+            }
+        }
+    ]
+
+    const cursor = coll.aggregate(aggr)
+}
+
+async function getCollection(collName: string) {
+    
+    await client.connect()
+
+    const db = client.db(config.dbName)
+    const coll = db.collection(collName)
+    return coll
 }

@@ -21,3 +21,4 @@ export function getForumInfo(forum: string, thread: string) {
     }
     return http.post<DisqusForumInfo>("forumlink", data)
 }
+
