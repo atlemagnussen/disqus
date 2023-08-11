@@ -1,3 +1,4 @@
+import { ErrorDetails } from "./types"
 
 const baseUrl = location.origin
 
@@ -39,20 +40,17 @@ const createRequest = (url: string, method: string, contentType?: string, data?:
 }
 
 async function http<T>(request: RequestInfo): Promise<T> {
-    let errorFetchMsg
+    //let errorFetchMsg
     const res = await fetch(request)
-    .catch((error) => {
-        errorFetchMsg = "Error fetching"
-        console.error(error.message)
-        throw new Error(errorFetchMsg)
-    })
+    
     return resHandler(res)
 }
 
 const resHandler = async (res: Response) => {
     let errorFetchMsg: string
+    const contentType = res.headers.get("content-type")
     if (res.ok) {
-        const contentType = res.headers.get("content-type")
+        
         if (res.status === 200 || res.status === 201) {
             
             if (contentType && contentType.includes("application/json")) {
@@ -66,22 +64,17 @@ const resHandler = async (res: Response) => {
             return ""
         }
     } else {
-        console.error(`${res.statusText} (${res.status})`)
+        console.log("Request return error code", res.status)
+        errorFetchMsg = res.statusText ?? "Error fetching"
         
-        errorFetchMsg = "Error fetching"
-        
-        if (res.status >= 400 && res.status < 500) {
-            try {
-                const pd = await res.json()
-                console.log(pd)
-            }
-            catch (ex) {
-                console.debug(ex);
-            }
+        if (res.status >= 400 && res.status < 500 && contentType && contentType.includes("application/json")) {
+            const errorDetails = await res.json() as ErrorDetails
+            throw new Error(errorDetails.message)
             
         } else {
             const message = await res.text()
-            console.log(message)
+            if (message)
+                errorFetchMsg = message
         }
         
         throw new Error(errorFetchMsg)

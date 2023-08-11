@@ -25,7 +25,9 @@ export class SearchView extends LitElement {
             flex-direction: column;
             gap: 0.5rem;
         }
-
+        .error {
+            color: var(--cardinal-blue);
+        }
         * {
             box-sizing: border-box;
         }
@@ -41,10 +43,14 @@ export class SearchView extends LitElement {
     }
 
     private userName = "RadonReady"
+    private authorName = ""
     private forum = "itavisen"
 
-    inputChangeEvent(e: any) {
+    usernameChanged(e: any) {
         this.userName = e.target.value
+    }
+    authorNameChanged(e: any) {
+        this.authorName = e.target.value
     }
     selectChangeEvent(e: any) {
         this.forum = e.target.value
@@ -56,9 +62,18 @@ export class SearchView extends LitElement {
         }
     }
     async search() {
-        const res = await getPostsByAuthor(this.forum, this.userName)
-        this.comments = res
+        this.error = ""
+        try {
+            const res = await getPostsByAuthor(this.forum, this.userName, this.authorName)
+            this.comments = res
+        }
+        catch(error: any) {
+            this.error = error.message
+            this.comments = []
+        }
     }
+
+    private error = ""
     
     showLink = true
 
@@ -70,12 +85,16 @@ export class SearchView extends LitElement {
             
             <div class="wrapper">
                 <div class="search">
-                    <input placeholder="author username" type="text" value="RadonReady" @input=${this.inputChangeEvent} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author username" type="text" value="RadonReady" @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author name" type="text" value="" @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
                     <select @change=${this.selectChangeEvent}>
                         <option value="itavisen">itavisen</option>
                         <option value="digi-no">digi</option>
                     </select>
                     <search-button @click=${this.search}></search-button>
+                    ${this.error ? html`
+                        <span class="error">${this.error}</span>
+                    ` : html``}
                 </div>
                 <div class="result">
                     ${this.renderContent()}

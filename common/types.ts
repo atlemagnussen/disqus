@@ -25,7 +25,8 @@ export interface DisqusForumInfo {
 export interface SearchRequest {
     forum: string
     thread?: string
-    author?: string
+    username?: string
+    authorname?: string
 }
 
 export interface ForumRequest {
@@ -75,4 +76,8 @@ export interface DisqusThreadResponse {
     cursor: DisqusCursor
     code: number
     response: DisqusForumInfo[]
+}
+
+export interface ErrorDetails {
+    message: string
 }

@@ -1,6 +1,6 @@
 import { logger } from "./logger"
 import { Collection, Document, MongoClient, UpdateOptions } from "mongodb"
-import { DisqusCommentItem, DisqusOriginalComment } from "@common/types"
+import { DisqusCommentItem, DisqusOriginalComment, SearchRequest } from "@common/types"
 import config from "./config"
 
 // const url = "mongodb://localhost:27017"
@@ -20,30 +20,59 @@ const projectFields = {
     }
 }
 
-export const getCommentsByAuthorOld = async (collName: string, author: string) => {
+export const searchComments = async (search: SearchRequest) => {
     await client.connect()
 
     const db = client.db(config.dbName)
-    const collection = db.collection(collName)
+    const collection = db.collection(search.forum)
 
-    const filteredDocs = await collection.find({ "author.username": author })
-        .project(projectFields)
-        .sort({ "id": 1})
-        .toArray()
-    
-    logger.info("filteredDocs length=", filteredDocs.length)
+    const match = getMatchQuery(search)
+    const aggregate = [
+        {
+            "$match": match
+        },
+        {
+            "$project": projectFields
+        },
+        {
+            "$sort": { 
+                date : -1
+            }
+        }
+    ] 
+    const cursor = collection.aggregate(aggregate)
 
+    const docs = await cursor.toArray() as DisqusCommentItem[]
     client.close()
-    return filteredDocs as DisqusCommentItem[]
+    return docs
 }
 
-export const getCommentsByAuthor = async (collName: string, author: string) => {
+function getMatchQuery(s: SearchRequest) {
+    let expressions: Document[] = []
+
+    if (s.thread)
+        expressions.push({thread: s.thread })
+
+    if (s.authorname)
+        expressions.push({"author.name": s.authorname})
+
+    if (s.username)
+        expressions.push({"author.username": s.username})
+
+    if (expressions.length == 0)
+        throw new Error("need at least one filter")
+    return {
+        "$and": expressions
+    }
+}
+
+export const getCommentsByAuthor = async (collName: string, userName: string) => {
     await client.connect()
 
     const db = client.db(config.dbName)
     const collection = db.collection(collName)
 
-    const match = { "author.username": author }
+    const match = { "author.username": userName }
 
     const aggregate = [
         {

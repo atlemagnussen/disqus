@@ -1,9 +1,9 @@
 import http from "@common/backendHttp"
 import { DisqusCommentItem, DisqusForumInfo, ForumRequest, SearchRequest } from "@common/types"
 
-export function getPostsByAuthor(forum: string, author: string) {
+export function getPostsByAuthor(forum: string, username?: string, authorname?: string) {
     const data: SearchRequest = {
-        forum, author
+        forum, username, authorname
     }
     return http.post<DisqusCommentItem[]>("getcommentsby", data)
 }

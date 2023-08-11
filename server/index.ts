@@ -1,6 +1,6 @@
 import path from "path"
 import express from "express"
-import { getCommentsByAuthor, getCommentsByThread } from "./mongo"
+import { searchComments } from "./mongo"
 import { getForumLink } from "./disqus"
 import bodyParser from "body-parser"
 import { DisqusCommentItem, ForumRequest, SearchRequest } from "@common/types"
@@ -20,12 +20,14 @@ app.post("/getcommentsby", async (req, res) => {
 
     let docs: DisqusCommentItem[] = []
     const searchReq = req.body as SearchRequest
-    if (searchReq.author) {
-        docs = await getCommentsByAuthor(searchReq.forum, searchReq.author)
-    } else if(searchReq.thread) {
-        docs = await getCommentsByThread(searchReq.forum, searchReq.thread)
+    try {
+        docs = await searchComments(searchReq)
     }
-    
+    catch(er: any) {
+        console.log("ERROR GETTING DOCS!")
+        console.error(er.message)
+        return res.status(400).json({message: er.message})
+    }
     return res.send(docs)
 })
 
