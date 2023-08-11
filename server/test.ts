@@ -4,7 +4,7 @@ const FORUM = "itavisen"
 
 async function dowork() {
     const ids = await findDuplicates(FORUM)
-    await removeDuplicates(FORUM, ids)
+    // await removeDuplicates(FORUM, ids)
 }
 
 dowork().catch(er => {
