@@ -86,7 +86,7 @@ export async function findDuplicates(collName: string) {
     ]
     const duplicatesCursor = coll.aggregate(aggregationPipeline, { allowDiskUse: true})
     
-    let ids = []
+    let ids: string[] = []
     let count = 0
     for await (const doc of duplicatesCursor) {
         count += 1
@@ -94,4 +94,20 @@ export async function findDuplicates(collName: string) {
     }
     logger.info(`${count} duplicates`)
     logger.info("duplicate ids", ids)
+
+    return ids
+}
+
+export async function removeDuplicates(collName: string, ids: string[]) {
+    await client.connect()
+
+    const db = client.db(config.dbName)
+    const coll = db.collection(collName)
+
+    for (let i = 0; i < ids.length; i++) {
+        let id = ids[i]
+        logger.info("remove id", id)
+        const res = await coll.deleteOne({id})
+        logger.info(`Removed ${res.deletedCount}`)
+    }
 }

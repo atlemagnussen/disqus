@@ -1,6 +1,14 @@
-import { findDuplicates } from "./mongo"
-function dowork() {
-    findDuplicates("itavisen")
+import { findDuplicates, removeDuplicates } from "./mongo"
+
+const FORUM = "itavisen"
+
+async function dowork() {
+    const ids = await findDuplicates(FORUM)
+    await removeDuplicates(FORUM, ids)
 }
 
-dowork()
+dowork().catch(er => {
+    console.error(er)
+}).finally(() => {
+    console.info("done")
+})
