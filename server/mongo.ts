@@ -84,9 +84,13 @@ export async function findDuplicates(collName: string) {
         {"$match": {"_id" :{ "$ne" : null } , "count" : {"$gt": 1} } }, 
         {"$project": {"name" : "$_id", "_id" : 0} }
     ]
-    const duplicatesCursor = coll.aggregate(aggregationPipeline)
-
+    const duplicatesCursor = coll.aggregate(aggregationPipeline, { allowDiskUse: true})
+    
+    let ids = []
+    let count = 0
     for await (const doc of duplicatesCursor) {
-        logger.info(doc)
+        count += 1
+        ids.push(doc.name)
     }
+    logger.info(`${count} duplicates`)
 }
