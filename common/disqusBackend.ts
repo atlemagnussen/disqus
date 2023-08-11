@@ -1,5 +1,5 @@
 import http from "@common/backendHttp"
-import { DisqusCommentItem, DisqusForumInfo, ForumRequest, SearchRequest } from "@common/types"
+import { CommentsStatsDay, DisqusCommentItem, DisqusForumInfo, ForumRequest, SearchRequest } from "@common/types"
 
 export function searchPosts(forum: string, username?: string, authorname?: string, text?: string) {
     const data: SearchRequest = {
@@ -22,3 +22,6 @@ export function getForumInfo(forum: string, thread: string) {
     return http.post<DisqusForumInfo>("forumlink", data)
 }
 
+export function getStats() {
+    return http.get<CommentsStatsDay[]>("stats")
+}

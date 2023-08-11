@@ -36,6 +36,10 @@ customElements.whenDefined("router-slot").then(() => {
             component: document.createElement("about-view")
         },
         {
+            path: "stats",
+            component: document.createElement("stats-view")
+        },
+        {
             path: "**",
             redirectTo: "search"
         }

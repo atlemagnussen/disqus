@@ -1,6 +1,6 @@
 import { ErrorDetails } from "./types"
 
-const baseUrl = location.origin
+const baseUrl = location.origin + "/api"
 
 const jsonContentType = "application/json"
 

@@ -1,6 +1,7 @@
 import path from "path"
 import express from "express"
-import { searchComments } from "./mongo"
+import { searchComments } from "./mongoComments"
+import { getCommentStats } from "./mongoStats"
 import { getForumLink } from "./disqus"
 import bodyParser from "body-parser"
 import { DisqusCommentItem, ForumRequest, SearchRequest } from "@common/types"
@@ -14,7 +15,7 @@ console.log("rootFolder", rootFolder)
 const client = path.resolve("..", "client/dist")
 const clientIndex = path.resolve(client, "index.html")
 
-app.post("/getcommentsby", async (req, res) => {
+app.post("/api/getcommentsby", async (req, res) => {
     let fullpath = decodeURI(req.path)
     console.log("requested file path", fullpath)
 
@@ -31,7 +32,7 @@ app.post("/getcommentsby", async (req, res) => {
     return res.send(docs)
 })
 
-app.post("/forumlink", async (req, res) => {
+app.post("/api/forumlink", async (req, res) => {
     let fullpath = decodeURI(req.path)
     console.log("requested file path", fullpath)
 
@@ -39,6 +40,14 @@ app.post("/forumlink", async (req, res) => {
 
     const link = await getForumLink(forumReq.forum, forumReq.thread)
     return res.send(link)
+})
+
+app.get("/api/stats", async (req, res) => {
+    let fullpath = decodeURI(req.path)
+    console.log("requested file path", fullpath)
+
+    const stats = await getCommentStats("itavisen")
+    return res.send(stats)
 })
 
 app.use(express.static(client))

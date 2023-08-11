@@ -1,14 +1,14 @@
-import { findDuplicates, removeDuplicates } from "./mongo"
+import { getCommentStats } from "./mongoStats"
 
-const FORUM = "itavisen"
-
-async function dowork() {
-    const ids = await findDuplicates(FORUM)
-    // await removeDuplicates(FORUM, ids)
+async function main() {
+    const values = await getCommentStats("itavisen")
+    console.log(values)
 }
 
-dowork().catch(er => {
+main().catch(er => {
     console.error(er)
-}).finally(() => {
-    console.info("done")
+})
+.finally(() => {
+    console.log("done")
+    process.exit()
 })

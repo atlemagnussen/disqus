@@ -58,7 +58,7 @@ export class DirHeader extends LitElement {
                     <home-button></home-button>
                 </a>
                 <h2>Disqus</h2>
-                
+                <a href="/stats">Stats</a>
             </div>
         `
     }

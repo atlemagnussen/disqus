@@ -82,3 +82,9 @@ export interface DisqusThreadResponse {
 export interface ErrorDetails {
     message: string
 }
+
+
+export interface CommentsStatsDay {
+    day: Date
+    count: number
+}
