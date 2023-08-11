@@ -1,6 +1,6 @@
 import { findDuplicates } from "./mongo"
 function dowork() {
-    findDuplicates()
+    findDuplicates("itavisen")
 }
 
 dowork()
