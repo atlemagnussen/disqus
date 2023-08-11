@@ -1,5 +1,5 @@
 import { MongoClient } from "mongodb"
-import { DisqusCommentItem } from "@common/types"
+import { DisqusCommentItem, DisqusOriginalComment } from "@common/types"
 import config from "./config"
 
 // const url = "mongodb://localhost:27017"
@@ -34,4 +34,20 @@ export const getCommentsByThread = async (collName: string, thread: string) => {
 
     client.close()
     return filteredDocs as DisqusCommentItem[]
+}
+
+export async function SaveComment(collName: string, comment: DisqusOriginalComment) {
+    await client.connect()
+
+    const db = client.db(config.dbName)
+    const coll = db.collection(collName)
+
+    const exists = await coll.findOne({id: comment.id})
+    const isOpenForEdit = new Date(comment.editableUntil) > new Date()
+
+    if (exists && !isOpenForEdit)
+        return false
+
+    const res = await coll.insertOne(comment)
+    return true
 }

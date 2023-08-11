@@ -1,14 +1,11 @@
-import { getForumLink } from "./disqus"
-
-
 
 function dowork() {
-    getForumLink("7021459969").then(th => {
-        console.log(th)
-    })
-    .catch(er => {
-        console.error(er)
-    })
+    var dd = new Date("2023-08-11T01:07:10")
+    console.log("dd", dd.toISOString())
+    var today = new Date()
+    console.log("to", today.toISOString())
+    var isOpenForEdit = dd > today
+    console.log("isOpenForEdit", isOpenForEdit)
 }
 
 dowork()

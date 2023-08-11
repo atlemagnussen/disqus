@@ -39,6 +39,7 @@ export interface DisqusOriginalComment {
     message: string
     raw_message: string
     createdAt: string
+    editableUntil: string
     isEdited: boolean
     author: DisqusAuthor
     likes: number

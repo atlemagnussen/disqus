@@ -21,9 +21,9 @@ app.post("/getcommentsby", async (req, res) => {
     let docs: DisqusCommentItem[] = []
     const searchReq = req.body as SearchRequest
     if (searchReq.author) {
-        docs = await getCommentsByAuthor("disqus", searchReq.forum, searchReq.author)
+        docs = await getCommentsByAuthor(searchReq.forum, searchReq.author)
     } else if(searchReq.thread) {
-        docs = await getCommentsByThread("disqus", searchReq.forum, searchReq.thread)
+        docs = await getCommentsByThread(searchReq.forum, searchReq.thread)
     }
     
     return res.send(docs)
