@@ -88,8 +88,13 @@ export class SearchView extends LitElement {
         if (this.comments.length == 0)
             return html`<h2>No entries</h2>`
         
-        return this.comments.map(c => {
-            return html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`
-        })
+        return html`
+            <h3>Found ${this.comments.length} comments</h3>
+            ${this.comments.map(c => {
+                    return html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`
+                })
+            }
+        `
+        
     }
 }
