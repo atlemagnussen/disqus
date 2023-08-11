@@ -5,17 +5,30 @@ import config from "./config"
 
 // const url = "mongodb://localhost:27017"
 const client = new MongoClient(config.mongoConnStr)
-const projectFields = { "message": 1, "forum": 1, "thread": 1, "createdAt": 1, "author": 1, "likes": 1, "dislikes": 1}
+const projectFields = { 
+    "message": 1,
+    "forum": 1,
+    "thread": 1,
+    "createdAt": 1,
+    "author": 1,
+    "likes": 1,
+    "dislikes": 1,
+    "date": {
+        $dateFromString: {
+            dateString: '$createdAt'
+        }
+    }
+}
 
-export const getCommentsByAuthor = async (collName: string, author: string) => {
+export const getCommentsByAuthorOld = async (collName: string, author: string) => {
     await client.connect()
 
     const db = client.db(config.dbName)
     const collection = db.collection(collName)
 
     const filteredDocs = await collection.find({ "author.username": author })
-        .sort({ "createdAt": -1})
         .project(projectFields)
+        .sort({ "id": 1})
         .toArray()
     
     logger.info("filteredDocs length=", filteredDocs.length)
@@ -24,20 +37,60 @@ export const getCommentsByAuthor = async (collName: string, author: string) => {
     return filteredDocs as DisqusCommentItem[]
 }
 
-export const getCommentsByThread = async (collName: string, thread: string) => {
+export const getCommentsByAuthor = async (collName: string, author: string) => {
     await client.connect()
 
     const db = client.db(config.dbName)
     const collection = db.collection(collName)
 
-    const filteredDocs = await collection.find({ thread })
-        .project(projectFields)
-        .toArray()
-    
-    logger.info("filteredDocs length=", filteredDocs.length)
+    const match = { "author.username": author }
 
+    const aggregate = [
+        {
+            "$match": match
+        },
+        {
+            "$project": projectFields
+        },
+        {
+            "$sort": { 
+                date : -1
+            }
+        }
+    ] 
+    const cursor = collection.aggregate(aggregate)
+
+    const docs = await cursor.toArray() as DisqusCommentItem[]
     client.close()
-    return filteredDocs as DisqusCommentItem[]
+    return docs
+}
+
+export const getCommentsByThread = async (collName: string, thread: string) => {
+    await client.connect()
+
+    const db = client.db(config.dbName)
+    const collection = db.collection(collName)
+    
+    const match = { thread }
+
+    const aggregate = [
+        {
+            "$match": match
+        },
+        {
+            "$project": projectFields
+        },
+        {
+            "$sort": { 
+                date : -1
+            }
+        }
+    ] 
+    const cursor = collection.aggregate(aggregate)
+
+    const docs = await cursor.toArray() as DisqusCommentItem[]
+    client.close()
+    return docs
 }
 
 export async function SaveComment(collName: string, comment: DisqusOriginalComment) {
