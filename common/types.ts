@@ -27,6 +27,7 @@ export interface SearchRequest {
     thread?: string
     username?: string
     authorname?: string
+    text?: string
 }
 
 export interface ForumRequest {

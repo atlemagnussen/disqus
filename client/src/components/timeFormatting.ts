@@ -1,4 +1,4 @@
-const browserlang = navigator.language
+const browserlang = "nb" // navigator.language
 
 export const formatDateOnly = (date: Date | string | number) => {
     if (!date)

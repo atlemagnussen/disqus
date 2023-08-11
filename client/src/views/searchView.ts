@@ -1,7 +1,7 @@
 import { DisqusCommentItem } from "@common/types"
 import { LitElement, css, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
-import { getPostsByAuthor } from "@common/disqusBackend"
+import { searchPosts } from "@common/disqusBackend"
 import { scrollToTop } from "@app/services/helpers"
 
 @customElement('search-view')
@@ -44,6 +44,7 @@ export class SearchView extends LitElement {
 
     private userName = "RadonReady"
     private authorName = ""
+    private content = ""
     private forum = "itavisen"
 
     usernameChanged(e: any) {
@@ -51,6 +52,9 @@ export class SearchView extends LitElement {
     }
     authorNameChanged(e: any) {
         this.authorName = e.target.value
+    }
+    contentChanged(e: any) {
+        this.content = e.target.value
     }
     selectChangeEvent(e: any) {
         this.forum = e.target.value
@@ -64,7 +68,7 @@ export class SearchView extends LitElement {
     async search() {
         this.error = ""
         try {
-            const res = await getPostsByAuthor(this.forum, this.userName, this.authorName)
+            const res = await searchPosts(this.forum, this.userName, this.authorName, this.content)
             this.comments = res
         }
         catch(error: any) {
@@ -87,6 +91,7 @@ export class SearchView extends LitElement {
                 <div class="search">
                     <input placeholder="author username" type="text" value="RadonReady" @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
                     <input placeholder="author name" type="text" value="" @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="content" type="text" value="" @input=${this.contentChanged} @keypress=${this.keyPressEvent} />
                     <select @change=${this.selectChangeEvent}>
                         <option value="itavisen">itavisen</option>
                         <option value="digi-no">digi</option>

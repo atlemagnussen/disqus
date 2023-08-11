@@ -59,6 +59,13 @@ function getMatchQuery(s: SearchRequest) {
     if (s.username)
         expressions.push({"author.username": s.username})
 
+    if (s.text)
+        expressions.push({
+            $text: {
+                $search: s.text
+            }
+        })
+    
     if (expressions.length == 0)
         throw new Error("need at least one filter")
     return {
