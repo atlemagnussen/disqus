@@ -93,4 +93,5 @@ export async function findDuplicates(collName: string) {
         ids.push(doc.name)
     }
     logger.info(`${count} duplicates`)
+    logger.info("duplicate ids", ids)
 }
