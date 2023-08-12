@@ -40,6 +40,10 @@ customElements.whenDefined("router-slot").then(() => {
             component: document.createElement("stats-view")
         },
         {
+            path: "hall",
+            component: document.createElement("hall-view")
+        },
+        {
             path: "**",
             redirectTo: "search"
         }

@@ -32,7 +32,7 @@ export function mostActiveUsers(forum: string) {
     const data: ForumRequest = {
         forum
     }
-    return http.post<DisqusUsersResponse[]>("mostActiveUsers", data)
+    return http.post<DisqusUsersResponse>("mostActiveUsers", data)
 }
 export function mostLikedUsers(forum: string) {
     const data: ForumRequest = {

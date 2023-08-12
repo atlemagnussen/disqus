@@ -55,15 +55,17 @@ app.post("/api/stats", async (req, res) => {
 app.post("/api/mostactiveusers", async (req, res) => {
     const forumReq = req.body as ForumRequest
 
-    const actUsers = await mostActiveUsers(forumReq.forum) as DisqusUsersResponse
-    res.send(actUsers)
+    const actUsers = await mostActiveUsers(forumReq.forum)
+    const actUsersJson = JSON.parse(actUsers)
+    res.send(actUsersJson)
 })
 
 app.post("/api/mostLikedUsers", async (req, res) => {
     const forumReq = req.body as ForumRequest
 
-    const actUsers = await mostLikedUsers(forumReq.forum) as DisqusUsersResponse
-    res.send(actUsers)
+    const likedUsers = await mostLikedUsers(forumReq.forum)
+    const likedUsersJson = JSON.parse(likedUsers) as DisqusUsersResponse
+    res.send(likedUsersJson)
 })
 
 app.use(express.static(client))

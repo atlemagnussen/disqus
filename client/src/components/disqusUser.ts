@@ -10,6 +10,9 @@ export class DisqusUserInfo extends LitElement {
             flex-direction: column;
             padding: 0.3rem;
         }
+        .username {
+            font-weight: bolder;
+        }
     `
 
     @property({attribute: false})
@@ -22,7 +25,8 @@ export class DisqusUserInfo extends LitElement {
             `
         return html`
             <div>
-                <h3>${this.user.username}</h3>
+                <span class="username">${this.user.username}</span>
+                <span class="posts">${this.user.numPosts}</span>
             </div>
         `
     }

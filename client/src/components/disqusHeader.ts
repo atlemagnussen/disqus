@@ -59,6 +59,7 @@ export class DirHeader extends LitElement {
                 </a>
                 <h2>Disqus</h2>
                 <a href="/stats">Stats</a>
+                <a href="/hall">Hall of fame</a>
             </div>
         `
     }
