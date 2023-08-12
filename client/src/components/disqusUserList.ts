@@ -9,6 +9,7 @@ export class DisqusUserList extends LitElement {
             display: flex;
             flex-direction: column;
             padding: 0.3rem;
+            gap: 1rem;
         }
     `
 
@@ -16,13 +17,10 @@ export class DisqusUserList extends LitElement {
     users: DisqusUser[] = []
 
     render() {
-        
         return html`
-            <article>
-                ${this.users.map(u => {
-                    return html`<disqus-user .user=${u}></disqus-user>`
-                })}
-            </article>
+            ${this.users.map(u => {
+                return html`<disqus-user .user=${u}></disqus-user>`
+            })}
         `
     }
 }
