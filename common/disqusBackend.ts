@@ -1,5 +1,5 @@
 import http from "@common/backendHttp"
-import { CommentsStatsDay, DisqusCommentItem, DisqusForumInfo, ForumRequest, SearchRequest } from "@common/types"
+import { CommentsStatsDay, DisqusCommentItem, DisqusForumInfo, DisqusUsersResponse, ForumRequest, SearchRequest } from "@common/types"
 
 export function searchPosts(forum: string, username?: string, authorname?: string, text?: string) {
     const data: SearchRequest = {
@@ -27,4 +27,16 @@ export function getStats(forum: string) {
         forum
     }
     return http.post<CommentsStatsDay[]>("stats", data)
+}
+export function mostActiveUsers(forum: string) {
+    const data: ForumRequest = {
+        forum
+    }
+    return http.post<DisqusUsersResponse[]>("mostActiveUsers", data)
+}
+export function mostLikedUsers(forum: string) {
+    const data: ForumRequest = {
+        forum
+    }
+    return http.post<DisqusUsersResponse>("mostLikedUsers", data)
 }

@@ -39,12 +39,18 @@ export const getPostsFromForum = async (forum: string, cursor?: string) => {
 }
 
 export function mostActiveUsers(forum: string) {
+    if (!forum)
+        throw new Error("missing forum parameter")
+
     let usersUrl = "/forums/listMostActiveUsers.json"
     let url = `${BASEURL}${usersUrl}?api_key=${config.apiKey}&forum=${forum}`
     return getHttps(url)
 }
 
 export function mostLikedUsers(forum: string) {
+    if (!forum)
+        throw new Error("missing forum parameter")
+    
     let usersUrl = "/forums/listMostLikedUsers.json"
     let url = `${BASEURL}${usersUrl}?api_key=${config.apiKey}&forum=${forum}`
     return getHttps(url)

@@ -93,10 +93,14 @@ export interface DisqusThreadResponse extends DisqusApiResponse {
     response: DisqusForumInfo[]
 }
 
+export interface DisqusUsersResponse extends DisqusApiResponse {
+    response: DisqusUser[]
+}
+
+
 export interface ErrorDetails {
     message: string
 }
-
 
 export interface CommentsStatsDay {
     day: Date

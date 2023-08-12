@@ -2,9 +2,9 @@ import path from "path"
 import express from "express"
 import { searchComments } from "./mongoComments"
 import { getCommentStats } from "./mongoStats"
-import { getForumLink } from "./disqus"
+import { getForumLink, mostActiveUsers, mostLikedUsers } from "./disqus"
 import bodyParser from "body-parser"
-import { DisqusCommentItem, ForumRequest, SearchRequest } from "@common/types"
+import { DisqusCommentItem, DisqusUsersResponse, ForumRequest, SearchRequest } from "@common/types"
 import config from "./config"
 
 const app = express()
@@ -50,6 +50,20 @@ app.post("/api/stats", async (req, res) => {
 
     const stats = await getCommentStats(forumReq.forum)
     return res.send(stats)
+})
+
+app.post("/api/mostactiveusers", async (req, res) => {
+    const forumReq = req.body as ForumRequest
+
+    const actUsers = await mostActiveUsers(forumReq.forum) as DisqusUsersResponse
+    res.send(actUsers)
+})
+
+app.post("/api/mostLikedUsers", async (req, res) => {
+    const forumReq = req.body as ForumRequest
+
+    const actUsers = await mostLikedUsers(forumReq.forum) as DisqusUsersResponse
+    res.send(actUsers)
 })
 
 app.use(express.static(client))
