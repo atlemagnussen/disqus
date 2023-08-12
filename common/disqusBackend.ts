@@ -22,6 +22,9 @@ export function getForumInfo(forum: string, thread: string) {
     return http.post<DisqusForumInfo>("forumlink", data)
 }
 
-export function getStats() {
-    return http.get<CommentsStatsDay[]>("stats")
+export function getStats(forum: string) {
+    const data: ForumRequest = {
+        forum
+    }
+    return http.post<CommentsStatsDay[]>("stats", data)
 }

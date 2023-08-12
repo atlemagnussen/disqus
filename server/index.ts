@@ -38,15 +38,17 @@ app.post("/api/forumlink", async (req, res) => {
 
     const forumReq = req.body as ForumRequest
 
-    const link = await getForumLink(forumReq.forum, forumReq.thread)
+    const link = await getForumLink(forumReq.forum, forumReq.thread!)
     return res.send(link)
 })
 
-app.get("/api/stats", async (req, res) => {
+app.post("/api/stats", async (req, res) => {
     let fullpath = decodeURI(req.path)
     console.log("requested file path", fullpath)
 
-    const stats = await getCommentStats("itavisen")
+    const forumReq = req.body as ForumRequest
+
+    const stats = await getCommentStats(forumReq.forum)
     return res.send(stats)
 })
 

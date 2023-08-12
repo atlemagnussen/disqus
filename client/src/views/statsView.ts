@@ -3,7 +3,8 @@ import { customElement, state } from "lit/decorators.js"
 import {createRef, ref} from "lit/directives/ref.js"
 import { getStats } from "@common/disqusBackend"
 import { CommentsStatsDay } from "@common/types"
-import { getChart } from "./highCharts"
+import { getChart, updateChart } from "./highCharts"
+import { Chart } from "highcharts"
 
 @customElement('stats-view')
 export class StatsView extends LitElement {
@@ -20,33 +21,32 @@ export class StatsView extends LitElement {
             flex: 1 1 auto 
         }
     `
+    forum = "itavisen"
+    async selectChangeEvent(e: any) {
+        this.forum = e.target.value
+        const stats = await getStats(this.forum)
+        if (this.chart)
+            updateChart(this.chart, stats)
+    }
 
     @state()
     stats: CommentsStatsDay[] = []
 
     chartDivRef = createRef<HTMLDivElement>()
+    chart: Chart | null = null
 
-    async fetchStats() {
-        const stats = await getStats()
-        this.stats = stats
-    }
-    connectedCallback(): void {
-        super.connectedCallback()
-    }
 
     async firstUpdated() {
-        await this.fetchStats()
+        const stats = await getStats(this.forum)
         if (this.chartDivRef.value) {
             const divEl = this.chartDivRef.value
-            const chart = getChart(divEl, this.stats)
-            console.log(chart)
+            this.chart = getChart(divEl, stats)
         }
-            
     }
     render() {
         return html`
             <div>
-                <p>Chart</p>
+                <forum-selector @change=${this.selectChangeEvent}></forum-selector>
             </div>
             <div id="chart" class="highcharts-dark" ${ref(this.chartDivRef)}></div>
         `

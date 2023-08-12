@@ -32,7 +32,7 @@ export interface SearchRequest {
 
 export interface ForumRequest {
     forum: string
-    thread: string
+    thread?: string
 }
 
 export interface DisqusOriginalComment {

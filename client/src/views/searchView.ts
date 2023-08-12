@@ -92,10 +92,7 @@ export class SearchView extends LitElement {
                     <input placeholder="author username" type="text" value="RadonReady" @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
                     <input placeholder="author name" type="text" value="" @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
                     <input placeholder="content" type="text" value="" @input=${this.contentChanged} @keypress=${this.keyPressEvent} />
-                    <select @change=${this.selectChangeEvent}>
-                        <option value="itavisen">itavisen</option>
-                        <option value="digi-no">digi</option>
-                    </select>
+                    <forum-selector @change=${this.selectChangeEvent}></forum-selector>
                     <search-button @click=${this.search}></search-button>
                     ${this.error ? html`
                         <span class="error">${this.error}</span>

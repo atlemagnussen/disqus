@@ -73,6 +73,22 @@ Highcharts.theme = {
 // Apply the theme
 Highcharts.setOptions(Highcharts.theme)
 
+export function updateChart(chart: Highcharts.Chart, stats: CommentsStatsDay[]) {
+    const data = stats.map(s => {
+        return [new Date(s.day).getTime(), s.count]
+    })
+    
+    chart.update({
+        series: [
+            {
+                type: "area",
+                name: 'Comments',
+                data
+            }
+        ]
+    })
+}
+
 export function getChart(element: HTMLElement, stats: CommentsStatsDay[]) {
 
     const data = stats.map(s => {
