@@ -8,6 +8,19 @@ export interface DisqusCommentItem {
     dislikes: number
 }
 
+export interface DisqusUser {
+    id: string
+    username: string
+    name: string
+    profileUrl: string
+    location: string
+    isPrivate: boolean
+    isAnonymous: boolean
+    reputation: number
+    numPosts?: number
+    numVotes?: number
+}
+
 export interface DisqusAuthor {
     username: string
     name: string
@@ -67,15 +80,16 @@ export interface DisqusCursor {
     more: boolean
 }
 
-export interface DisqusPostsResponse {
+export interface DisqusApiResponse {
     cursor: DisqusCursor
     code: number
+}
+
+export interface DisqusPostsResponse extends DisqusApiResponse{
     response: DisqusOriginalComment[]
 }
 
-export interface DisqusThreadResponse {
-    cursor: DisqusCursor
-    code: number
+export interface DisqusThreadResponse extends DisqusApiResponse {
     response: DisqusForumInfo[]
 }
 
