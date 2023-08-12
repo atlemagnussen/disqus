@@ -37,3 +37,15 @@ export const getPostsFromForum = async (forum: string, cursor?: string) => {
     const res = await getHttps(url)
     return res
 }
+
+export function mostActiveUsers(forum: string) {
+    let usersUrl = "/forums/listMostActiveUsers.json"
+    let url = `${BASEURL}${usersUrl}?api_key=${config.apiKey}&forum=${forum}`
+    return getHttps(url)
+}
+
+export function mostLikedUsers(forum: string) {
+    let usersUrl = "/forums/listMostLikedUsers.json"
+    let url = `${BASEURL}${usersUrl}?api_key=${config.apiKey}&forum=${forum}`
+    return getHttps(url)
+}

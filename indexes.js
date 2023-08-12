@@ -4,3 +4,4 @@
 // use disqus
 // show collections
 db.itavisen.createIndex( { message: "text" } )
+db["digi-no"].createIndex( { message: "text" } )

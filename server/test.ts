@@ -1,7 +1,7 @@
-import { getCommentStats } from "./mongoStats"
+import { mostLikedUsers } from "./disqus"
 
 async function main() {
-    const values = await getCommentStats("itavisen")
+    const values = await mostLikedUsers("itavisen")
     console.log(values)
 }
 
