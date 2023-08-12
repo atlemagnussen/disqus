@@ -13,15 +13,36 @@ export function getChart(element: HTMLElement, stats: CommentsStatsDay[]) {
     const color2 = Highcharts.color(color1).setOpacity(0).get('rgba') as string
 
     const options: Highcharts.Options = {
+        chart: {
+            backgroundColor: '#222',
+            borderColor: "#333",
+            plotBorderColor: "#444"
+        },
         title: {
-            text: 'Disqus'
+            text: 'Disqus',
+            style: {
+                color: "#FFF"
+            }
         },
         xAxis: {
             type: 'datetime',
+            labels: {
+                style: {
+                    color: "#FFF"
+                }
+            }
         },
         yAxis: {
             title: {
-                text: 'Comments'
+                text: 'Comments',
+                style: {
+                    color: "#FFF"
+                }
+            },
+            labels: {
+                style: {
+                    color: "#FFF"
+                }
             }
         },
         legend: {
