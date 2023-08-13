@@ -6,6 +6,11 @@ export interface DisqusCommentItem {
     author?: DisqusAuthor
     likes: number
     dislikes: number
+    isSpam?: boolean
+    isDeletedByAuthor?: boolean
+    isDeleted?: boolean
+    isFlagged?: boolean
+    isApproved?: boolean
 }
 
 export interface DisqusUser {

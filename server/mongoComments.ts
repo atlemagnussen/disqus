@@ -11,6 +11,11 @@ const projectFields = {
     "author": 1,
     "likes": 1,
     "dislikes": 1,
+    "isSpam": 1,
+    "isDeletedByAuthor": 1,
+    "isDeleted": 1,
+    "isFlagged": 1,
+    "isApproved": 1,
     "date": {
         $dateFromString: {
             dateString: '$createdAt'
