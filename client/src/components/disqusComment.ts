@@ -36,6 +36,9 @@ export class DisqusComment extends LitElement {
             font-weight: bolder;
             color: var(--cyan-dark);
         }
+        small {
+            color: var(--peach-dark);
+        }
         @media only screen and (max-width: 640px) {
             .wrapper {
                 width: 100%;
@@ -80,6 +83,12 @@ export class DisqusComment extends LitElement {
                 <span>${this.comment.author?.name} (${this.comment.author?.username})</span>
                 <span class="likes">Likes: ${this.comment.likes}</span>
                 <span class="downvotes">Downvotes: ${this.comment.dislikes}</span>
+                ${this.comment.isApproved ? html`<small>approved</small>` : html``}
+                ${this.comment.isSpam ? html`<small>spam</small>` : html``}
+                ${this.comment.isDeleted ? html`<small>deleted</small>` : html``}
+                ${this.comment.isDeletedByAuthor ? html`<small>deleted by author</small>` : html``}
+                ${this.comment.isFlagged ? html`<small>flagged</small>` : html``}
+                
             </div>
             <article>
                 ${unsafeHTML(this.comment.message)}
