@@ -46,6 +46,9 @@ export class SearchView extends LitElement {
     private authorName = ""
     private content = ""
     private forum = "itavisen"
+    
+    @state()
+    searching = false
 
     usernameChanged(e: any) {
         this.userName = e.target.value
@@ -67,6 +70,7 @@ export class SearchView extends LitElement {
     }
     async search() {
         this.error = ""
+        this.searching = true
         try {
             const res = await searchPosts(this.forum, this.userName, this.authorName, this.content)
             this.comments = res
@@ -74,6 +78,9 @@ export class SearchView extends LitElement {
         catch(error: any) {
             this.error = error.message
             this.comments = []
+        }
+        finally {
+            this.searching = false
         }
     }
 
@@ -106,8 +113,11 @@ export class SearchView extends LitElement {
         `
     }
     renderContent() {
+        if (this.searching) {
+            return html`<h2>Searching...</h2>`
+        }
         if (this.comments.length == 0)
-            return html`<h2>No entries</h2>`
+            return html`<h2>No entries, try to perform a search!</h2>`
         
         return html`
             <h3>Found ${this.comments.length} comments</h3>
