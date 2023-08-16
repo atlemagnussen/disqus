@@ -1,6 +1,6 @@
 import { logger } from "./logger"
 import { getPostsFromForum } from "./disqus"
-import { SaveComment }from "./mongo"
+import { SaveComment }from "./mongoComments"
 import { DisqusPostsResponse } from "@common/types"
 
 logger.info("crawler starting")
