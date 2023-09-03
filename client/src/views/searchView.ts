@@ -121,6 +121,7 @@ export class SearchView extends LitElement {
         
         return html`
             <h3>Found ${this.comments?.data.length} comments</h3>
+            <pager-element .total=${this.comments?.pagination.totalCount!}></pager-element>
             ${this.comments?.data.map(c => {
                     return html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`
                 })
