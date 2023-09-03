@@ -1,5 +1,5 @@
 import { getPostsByThread } from "@common/disqusBackend"
-import { DisqusCommentItem } from "@common/types"
+import { PaginatedComments } from "@common/types"
 import { LitElement, css, html } from "lit"
 import { customElement, property, state } from "lit/decorators.js"
 
@@ -35,7 +35,7 @@ export class ThreadView extends LitElement {
     thread = ""
 
     @state()
-    comments: DisqusCommentItem[] = []
+    comments: PaginatedComments | null = null
 
     async getComments() {
         const res = await getPostsByThread(this.forum, this.thread)
@@ -54,7 +54,7 @@ export class ThreadView extends LitElement {
             <div class="wrapper">
                 <div class="info">
                     <forum-info forum="${this.forum}" thread="${this.thread}"></forum-info>
-                    <span>Number of comments in this db: ${this.comments.length}</span>
+                    <span>Number of comments in this db: ${this.comments?.data.length}</span>
                 </div>
                 <div class="result">
                     ${this.renderContent()}
@@ -64,10 +64,10 @@ export class ThreadView extends LitElement {
         `
     }
     renderContent() {
-        if (this.comments.length == 0)
+        if (this.comments?.data.length == 0)
             return html`<h2>No entries</h2>`
         
-        return this.comments.map(c => {
+        return this.comments?.data.map(c => {
             return html`<disqus-comment .comment=${c}></disqus-comment>`
         })
     }

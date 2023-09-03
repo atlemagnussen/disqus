@@ -1,4 +1,4 @@
-import { DisqusCommentItem } from "@common/types"
+import { PaginatedComments } from "@common/types"
 import { LitElement, css, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
 import { searchPosts } from "@common/disqusBackend"
@@ -72,12 +72,12 @@ export class SearchView extends LitElement {
         this.error = ""
         this.searching = true
         try {
-            const res = await searchPosts(this.forum, this.userName, this.authorName, this.content)
+            const res = await searchPosts(this.forum, 1, this.userName, this.authorName, this.content)
             this.comments = res
         }
         catch(error: any) {
             this.error = error.message
-            this.comments = []
+            this.comments = null
         }
         finally {
             this.searching = false
@@ -89,7 +89,7 @@ export class SearchView extends LitElement {
     showLink = true
 
     @state()
-    comments: DisqusCommentItem[] = []
+    comments: PaginatedComments | null = null
 
     render() {
         return html`
@@ -116,12 +116,12 @@ export class SearchView extends LitElement {
         if (this.searching) {
             return html`<h2>Searching...</h2>`
         }
-        if (this.comments.length == 0)
+        if (this.comments?.data.length == 0)
             return html`<h2>No entries, try to perform a search!</h2>`
         
         return html`
-            <h3>Found ${this.comments.length} comments</h3>
-            ${this.comments.map(c => {
+            <h3>Found ${this.comments?.data.length} comments</h3>
+            ${this.comments?.data.map(c => {
                     return html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`
                 })
             }

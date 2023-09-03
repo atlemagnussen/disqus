@@ -4,7 +4,7 @@ import { searchComments } from "./mongoComments"
 import { getCommentStats } from "./mongoStats"
 import { getForumLink, mostActiveUsers, mostLikedUsers } from "./disqus"
 import bodyParser from "body-parser"
-import { DisqusCommentItem, DisqusUsersResponse, ForumRequest, SearchRequest } from "@common/types"
+import { DisqusCommentItem, DisqusUsersResponse, ForumRequest, PaginatedComments, SearchRequest } from "@common/types"
 import config from "./config"
 
 const app = express()
@@ -19,17 +19,23 @@ app.post("/api/getcommentsby", async (req, res) => {
     let fullpath = decodeURI(req.path)
     console.log("requested file path", fullpath)
 
-    let docs: DisqusCommentItem[] = []
+    let resComments: PaginatedComments = {
+        data: [],
+        pagination: {
+            page: 1,
+            pageSize: 100,
+        }
+    }
     const searchReq = req.body as SearchRequest
     try {
-        docs = await searchComments(searchReq)
+        resComments = await searchComments(searchReq)
     }
     catch(er: any) {
         console.log("ERROR GETTING DOCS!")
         console.error(er.message)
         return res.status(400).json({message: er.message})
     }
-    return res.send(docs)
+    return res.send(resComments)
 })
 
 app.post("/api/forumlink", async (req, res) => {
