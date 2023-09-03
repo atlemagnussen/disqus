@@ -150,7 +150,7 @@ export class PagerElement extends LitElement {
                                 <span>&lt;&lt;</span>
                             </li>
                             
-                            <li class='${this.currentPage === 1 ? "disabled" : ""}' click="${() => this.decrement()}">
+                            <li class='${this.currentPage === 1 ? "disabled" : ""}' @click="${() => this.decrement()}">
                                 <span>&lt;</span>
                             </li>
 
