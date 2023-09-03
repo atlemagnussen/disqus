@@ -1,3 +1,14 @@
+export interface PaginationInfo {
+    page: number
+    pageSize: number
+    totalCount?: number
+}
+
+export interface PaginatedComments {
+    pagination: PaginationInfo
+    data: DisqusCommentItem[]
+}
+
 export interface DisqusCommentItem {
     message: string,
     forum: string
@@ -46,6 +57,7 @@ export interface SearchRequest {
     username?: string
     authorname?: string
     text?: string
+    pagination?: PaginationInfo
 }
 
 export interface ForumRequest {

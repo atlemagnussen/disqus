@@ -1,7 +1,9 @@
-import { DisqusCommentItem, DisqusOriginalComment, SearchRequest } from "@common/types"
+import { DisqusCommentItem, DisqusOriginalComment, PaginatedComments, SearchRequest } from "@common/types"
 import { getCollection  } from "./mongo"
 import { Collection, Document, UpdateOptions } from "mongodb"
 import { logger } from "./logger"
+
+const defaultPagingSize = 100
 
 const projectFields = { 
     "message": 1,
@@ -27,6 +29,22 @@ export const searchComments = async (search: SearchRequest) => {
     
     const coll = await getCollection(search.forum)
 
+    let page = 1
+    let pageSize = defaultPagingSize
+
+    if (search.pagination) {
+        if (search.pagination.page)
+            page = search.pagination.page
+        if (search.pagination.pageSize)
+            pageSize = search.pagination.pageSize
+    }
+
+    let skip = 0
+    if (page > 1)
+        skip = (page - 1) * pageSize
+
+    console.log(`skip=${skip}, pageSize=${pageSize}`)
+
     const match = getMatchQuery(search)
     const aggregate = [
         {
@@ -39,12 +57,32 @@ export const searchComments = async (search: SearchRequest) => {
             "$sort": { 
                 date : -1
             }
+        },
+        {
+            "$facet": {
+              "data": [
+                { "$skip": skip },
+                { "$limit": pageSize }
+              ],
+              "pagination": [
+                {
+                    "$count": "totalCount",
+                }
+              ]
+            }
         }
     ] 
     const cursor = coll.aggregate(aggregate)
 
-    const docs = await cursor.toArray() as DisqusCommentItem[]
-    return docs
+    const docs = await cursor.toArray() as PaginatedComments[]
+    logger.info(`Found ${docs.length} paginated results`)
+    const res = docs[0]
+    /// @ts-ignore
+    res.pagination = res.pagination[0]
+
+    res.pagination.pageSize = pageSize
+    res.pagination.page = page
+    return res
 }
 
 function getMatchQuery(s: SearchRequest) {
@@ -71,56 +109,6 @@ function getMatchQuery(s: SearchRequest) {
     return {
         "$and": expressions
     }
-}
-
-export const getCommentsByAuthor = async (collName: string, userName: string) => {
-    
-    const coll = await getCollection(collName)
-
-    const match = { "author.username": userName }
-
-    const aggregate = [
-        {
-            "$match": match
-        },
-        {
-            "$project": projectFields
-        },
-        {
-            "$sort": { 
-                date : -1
-            }
-        }
-    ] 
-    const cursor = coll.aggregate(aggregate)
-
-    const docs = await cursor.toArray() as DisqusCommentItem[]
-    return docs
-}
-
-export const getCommentsByThread = async (collName: string, thread: string) => {
-    
-    const coll = await getCollection(collName)
-    
-    const match = { thread }
-
-    const aggregate = [
-        {
-            "$match": match
-        },
-        {
-            "$project": projectFields
-        },
-        {
-            "$sort": { 
-                date : -1
-            }
-        }
-    ] 
-    const cursor = coll.aggregate(aggregate)
-
-    const docs = await cursor.toArray() as DisqusCommentItem[]
-    return docs
 }
 
 export async function SaveComment(collName: string, comment: DisqusOriginalComment) {
