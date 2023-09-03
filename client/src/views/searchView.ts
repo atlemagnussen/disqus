@@ -72,7 +72,7 @@ export class SearchView extends LitElement {
         this.error = ""
         this.searching = true
         try {
-            const res = await searchPosts(this.forum, 1, this.userName, this.authorName, this.content)
+            const res = await searchPosts(this.forum, this.page, this.pagesize, this.userName, this.authorName, this.content)
             this.comments = res
         }
         catch(error: any) {
@@ -82,6 +82,17 @@ export class SearchView extends LitElement {
         finally {
             this.searching = false
         }
+    }
+
+    page = 1
+    pageNumChanged(e: CustomEvent) {
+        this.page = e.detail as number
+        this.search()
+    }
+    pagesize = 1000
+    pageSizeChanged(e: CustomEvent) {
+        this.pagesize = e.detail as number
+        this.search()
     }
 
     private error = ""
@@ -112,19 +123,27 @@ export class SearchView extends LitElement {
             </div>
         `
     }
+    renderComments() {
+        return this.comments?.data.map(c => html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`)
+            
+    }
     renderContent() {
-        if (this.searching) {
-            return html`<h2>Searching...</h2>`
-        }
-        if (this.comments?.data.length == 0)
+        
+        if (!this.comments || this.comments.pagination.totalCount == 0)
             return html`<h2>No entries, try to perform a search!</h2>`
         
         return html`
-            <h3>Found ${this.comments?.data.length} comments</h3>
-            <pager-element .total=${this.comments?.pagination.totalCount!}></pager-element>
-            ${this.comments?.data.map(c => {
-                    return html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`
-                })
+            <h3>Found ${this.comments.pagination.totalCount}, showing ${this.comments?.data.length} comments from page ${this.comments.pagination.page}</h3>
+            <pager-element 
+                total=${this.comments?.pagination.totalCount!}
+                currentpage=${this.page}
+                @page-num-changed=${this.pageNumChanged}
+                @page-size-changed=${this.pageSizeChanged}>
+            </pager-element>
+
+            ${this.searching ? 
+                html`<h2>Searching...</h2>` : 
+                this.renderComments()
             }
         `
         

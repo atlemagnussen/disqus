@@ -1,12 +1,12 @@
 import http from "@common/backendHttp"
 import { CommentsStatsDay, DisqusForumInfo, DisqusUsersResponse, ForumRequest, PaginatedComments, SearchRequest } from "@common/types"
 
-export function searchPosts(forum: string, page: number, username?: string, authorname?: string, text?: string) {
+export function searchPosts(forum: string, page: number, pageSize: number, username?: string, authorname?: string, text?: string) {
     const data: SearchRequest = {
         forum, username, authorname, text,
         pagination: {
             page,
-            pageSize: 1000
+            pageSize
         }
     }
     return http.post<PaginatedComments>("getcommentsby", data)

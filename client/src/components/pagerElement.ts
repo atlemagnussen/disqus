@@ -1,6 +1,11 @@
 import {html, css, LitElement} from "lit"
 import { customElement, property } from "lit/decorators.js"
 
+interface PagerResult {
+    totalPages: number
+    pages?: number[]
+}
+
 @customElement('pager-element')
 export class PagerElement extends LitElement {
 
@@ -8,23 +13,44 @@ export class PagerElement extends LitElement {
     total = 0
 
     _pagesTotal = 0
-    _currentPageSize = 10
-    _currentPage = 1
-    _pagesArr: number[] = []
-    _pageSizes = [10, 25, 50, 100]
+    currentPageSize = 1000
 
-    styles() {
-        return css`
-            div.pagerelement {
-                display: flex;
-                flex-direction: row;
-                justify-content: space-between;
-            }
-            div.pagerelement .pagination {
-                margin: 20px 0 0 0;
-            }
-        `
-    }
+    @property({attribute: true, type: Number})
+    currentPage = 1
+
+    _pagesArr: number[] = []
+    _pageSizes = [100, 250, 500, 1000]
+
+    static styles = css`
+        :host {
+            display: block;
+        }
+        .pagerelement {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+        }
+        ul.pagination {
+            list-style-type: none;
+            display: flex;
+            flex-direction: row;
+            gap: 0.2em;
+            padding-inline-start: 0;
+        }
+        ul.pagination li {
+            cursor: pointer;
+            display: inline-flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            background: blue;
+            padding: 0.5em;
+        }
+        ul.pagination li.active {
+            background: red;
+        }
+    `
 
 
     set pagesize(value: number) {
@@ -35,36 +61,51 @@ export class PagerElement extends LitElement {
         this.dispatchEvent(new CustomEvent(name, options))
     }
     setPage(pageNum: number) {
-        this._currentPage = pageNum
-        this.dispatchCustomEvent("pagenumchanged", {pageNum})
-        this.requestUpdate()
+        this.currentPage = pageNum
+        this.dispatchCustomEvent("page-num-changed", pageNum)
     }
     setPageSize(pageSize: number) {
-        this._currentPageSize = pageSize
-        this.dispatchCustomEvent("pagesizechanged", {pageSize})
+        this.currentPageSize = pageSize
+        this.dispatchCustomEvent("page-size-changed", pageSize)
         this.requestUpdate()
     }
     decrement() {
-        if (this._currentPage < 2)
+        if (this.currentPage < 2)
             return
-        this.setPage(this._currentPage-1)
+        this.setPage(this.currentPage-1)
     }
     increment() {
-        if (this._currentPage >= this._pagesTotal)
+        if (this.currentPage >= this._pagesTotal)
             return
-        this.setPage(this._currentPage+1)
+        this.setPage(this.currentPage+1)
     }
     updateNums() {
-        const pager = this.getPager(this.total, this._currentPage, this._currentPageSize)
+        const pager = this.getPager(this.currentPage, this.currentPageSize)
+        if (!pager.totalPages || !pager.pages) {
+            this._pagesArr = []
+            this._pagesTotal = 0
+            return    
+        }
+
         this._pagesArr = pager.pages
         this._pagesTotal = pager.totalPages
-        if (this._currentPage > this._pagesTotal) 
+        if (this.currentPage > this._pagesTotal) 
             this.setPage(1)
     }
-    getPager(totalItems: number, currentPage: number, pageSize: number) {
+
+    getPager(currentPage: number, pageSize: number) {
         currentPage = currentPage || 1
         pageSize = pageSize || 10
-        const totalPages = Math.ceil(totalItems / pageSize)
+
+        let result: PagerResult = {
+            totalPages: 0,
+            pages: [1]
+        }
+        
+        if (!this.total)
+            return result
+
+        let totalPages = Math.ceil(this.total / pageSize)
         let startPage = 0
         let endPage = 0
 
@@ -83,75 +124,65 @@ export class PagerElement extends LitElement {
                 endPage = currentPage + 4
             }
         }
-        const startIndex = (currentPage - 1) * pageSize
-        const endIndex = Math.min(startIndex + pageSize - 1, totalItems - 1)
+        //const startIndex = (currentPage - 1) * pageSize
+        //const endIndex = Math.min(startIndex + pageSize - 1, this.total - 1)
         const pages: number[] = []
         for (let i = startPage; i <= endPage; i++) {
             pages.push(i)
         }
-
-        return {
-            totalItems,
-            currentPage,
-            pageSize,
-            totalPages,
-            startPage,
-            endPage,
-            startIndex,
-            endIndex,
-            pages
-        }
+        result.pages = pages
+        result.totalPages = totalPages
+        return result
     }
     render() {
         this.updateNums()
         return html`
-        <style>${this.styles()}</style>
-        <div class="pagerelement">
-            <ul class="pagination">
-                <li class='${this._currentPage === 1 ? "disabled" : ""}'>
-                    <a @click="${() => this.setPage(1)}">
-                        <fa-icon icon="fa fa-angle-double-left"></fa-icon>
-                    </a>
-                </li>
-                <li class='${this._currentPage === 1 ? "disabled" : ""}'>
-                    <a @click="${() => this.decrement()}">
-                        <fa-icon icon="fa fa-angle-left"></fa-icon>
-                    </a>
-                </li>
+            <nav class="pagerelement">
+                <ul class="pagination">
+                    ${this._pagesArr.length === 0 ? 
+                        html`
+                            <li class='${this.currentPage === 1 ? "active" : ""}' @click="${() => this.setPage(1)}">
+                                <span>1</span>
+                            </li>
+                        ` : 
+                        html`
+                            <li class='${this.currentPage === 1 ? "disabled" : ""}' @click="${() => this.setPage(1)}">
+                                <span>&lt;&lt;</span>
+                            </li>
+                            
+                            <li class='${this.currentPage === 1 ? "disabled" : ""}' click="${() => this.decrement()}">
+                                <span>&lt;</span>
+                            </li>
 
-                ${this._pagesArr.map(page => html`
-                    <li class='${this._currentPage === page ? "active" : ""}'>
-                        <a @click="${() => this.setPage(page)}">
-                            ${page}
-                        </a>
-                    </li>
-                `)}
-                               
-                <li class='${this._currentPage === this._pagesTotal ? "disabled" : ""}'>
-                    <a @click="${() => this.increment()}">
-                        <fa-icon icon="fa fa-angle-right"></fa-icon>
-                    </a>
-                </li>
-                <li class='${this._currentPage === this._pagesTotal ? "disabled" : ""}'>
-                    <a @click="${() => this.setPage(this._pagesTotal)}">
-                        <fa-icon icon="fa fa-angle-double-right"></fa-icon>
-                    </a>
-                </li>
-            </ul>
+                            ${this._pagesArr.map(page => html`
+                                <li class='${this.currentPage === page ? "active" : ""}' @click="${() => this.setPage(page)}">
+                                    <span>
+                                        ${page}
+                                    </span>
+                                </li>
+                            `)}
+                                        
+                            <li class='${this.currentPage === this._pagesTotal ? "disabled" : ""}' @click="${() => this.increment()}">
+                                <span>&gt;</span>
+                            </li>
+                            
+                            <li class='${this.currentPage === this._pagesTotal ? "disabled" : ""}' @click="${() => this.setPage(this._pagesTotal)}">
+                                <span>&gt;&gt;</span>
+                            </li>
+                        `
+                    }
+                </ul>
 
-            <ul class="pagination">
-                ${this._pageSizes.map(size => html`
-                    <li class='${this._currentPageSize === size ? "active" : ""}'>
-                        <a @click="${() => this.setPageSize(size)}">
-                            ${size}
-                        </a>
-                    </li>
-                `)}
-            </ul>
-        </div>
+                <ul class="pagination">
+                    ${this._pageSizes.map(size => html`
+                        <li class='${this.currentPageSize === size ? "active" : ""}' @click="${() => this.setPageSize(size)}">
+                            <span>
+                                ${size}
+                            </span>
+                        </li>
+                    `)}
+                </ul>
+            </nav>
         `
-    }
-    createRenderRoot() {
-        return this
     }
 }

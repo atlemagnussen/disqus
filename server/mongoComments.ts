@@ -1,6 +1,6 @@
-import { DisqusCommentItem, DisqusOriginalComment, PaginatedComments, SearchRequest } from "@common/types"
+import { DisqusOriginalComment, PaginatedComments, SearchRequest } from "@common/types"
 import { getCollection  } from "./mongo"
-import { Collection, Document, UpdateOptions } from "mongodb"
+import { AggregateOptions, Collection, Document, UpdateOptions } from "mongodb"
 import { logger } from "./logger"
 
 const defaultPagingSize = 100
@@ -71,14 +71,26 @@ export const searchComments = async (search: SearchRequest) => {
               ]
             }
         }
-    ] 
-    const cursor = coll.aggregate(aggregate)
+    ]
+    const aggOptions: AggregateOptions = { allowDiskUse: true}
+    const cursor = coll.aggregate(aggregate, aggOptions)
 
     const docs = await cursor.toArray() as PaginatedComments[]
     logger.info(`Found ${docs.length} paginated results`)
     const res = docs[0]
+
     /// @ts-ignore
-    res.pagination = res.pagination[0]
+    if (res.pagination && res.pagination.length > 0) {
+        /// @ts-ignore
+        res.pagination = res.pagination[0]
+    }
+    else {
+        res.pagination = {
+            totalCount: 0,
+            page,
+            pageSize
+        }
+    }
 
     res.pagination.pageSize = pageSize
     res.pagination.page = page
