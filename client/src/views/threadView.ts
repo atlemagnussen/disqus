@@ -37,8 +37,9 @@ export class ThreadView extends LitElement {
     @state()
     comments: PaginatedComments | null = null
 
+    pagesize = 1000
     async getComments() {
-        const res = await getPostsByThread(this.forum, this.thread)
+        const res = await getPostsByThread(this.forum, this.thread, 1, this.pagesize)
         this.comments = res
     }
     connectedCallback(): void {

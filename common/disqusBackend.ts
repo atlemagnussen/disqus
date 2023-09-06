@@ -12,9 +12,13 @@ export function searchPosts(forum: string, page: number, pageSize: number, usern
     return http.post<PaginatedComments>("getcommentsby", data)
 }
 
-export function getPostsByThread(forum: string, thread: string) {
+export function getPostsByThread(forum: string, thread: string, page: number, pageSize: number) {
     const data: SearchRequest = {
-        forum, thread
+        forum, thread,
+        pagination: {
+            page,
+            pageSize
+        }
     }
     return http.post<PaginatedComments>("getcommentsby", data)
 }

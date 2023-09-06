@@ -139,7 +139,7 @@ export class PagerElement extends LitElement {
         return html`
             <nav class="pagerelement">
                 <ul class="pagination">
-                    ${this._pagesArr.length === 0 ? 
+                    ${this._pagesArr.length < 2 ? 
                         html`
                             <li class='${this.currentPage === 1 ? "active" : ""}' @click="${() => this.setPage(1)}">
                                 <span>1</span>
