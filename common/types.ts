@@ -10,9 +10,11 @@ export interface PaginatedComments {
 }
 
 export interface DisqusCommentItem {
-    message: string,
+    id: number
+    message: string
     forum: string
     thread: string
+    parent: number | null
     createdAt?: string
     author?: DisqusAuthor
     likes: number

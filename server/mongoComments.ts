@@ -5,10 +5,12 @@ import { logger } from "./logger"
 
 const defaultPagingSize = 100
 
-const projectFields = { 
+const projectFields = {
+    "id": 1,
     "message": 1,
     "forum": 1,
     "thread": 1,
+    "parent": 1,
     "createdAt": 1,
     "author": 1,
     "likes": 1,

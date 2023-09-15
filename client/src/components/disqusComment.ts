@@ -59,7 +59,7 @@ export class DisqusComment extends LitElement {
     }
 
     @property({attribute: false})
-    comment: DisqusCommentItem = { message: "", forum: "", thread: "", likes: 0, dislikes: 0 }
+    comment: DisqusCommentItem = { id: 0, parent: null, message: "", forum: "", thread: "", likes: 0, dislikes: 0 }
 
     @property({attribute: false})
     showlink = false
