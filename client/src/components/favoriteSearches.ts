@@ -58,6 +58,7 @@ export class DisqusUserList extends LitElement {
     render() {
         return html`
             <select @change=${this.selectChangeEvent} title="Your saved favorite queries">
+                <option value=""></option>
                 ${this.favorites.map(f => html`<option .value=${f.name}>${f.name}</option>`)}
             </select>
             <star-button 
