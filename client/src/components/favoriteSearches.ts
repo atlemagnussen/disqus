@@ -57,12 +57,13 @@ export class DisqusUserList extends LitElement {
     }
     render() {
         return html`
-            <star-button @click=${this.starClicked}>hello</star-button>
-            <select @change=${this.selectChangeEvent}>
+            <select @change=${this.selectChangeEvent} title="Your saved favorite queries">
                 ${this.favorites.map(f => html`<option .value=${f.name}>${f.name}</option>`)}
-                
             </select>
-            
+            <star-button 
+                title="click to save favorite search"
+                @click=${this.starClicked}>
+            </star-button>
         `
     }
     disconnectedCallback(): void {

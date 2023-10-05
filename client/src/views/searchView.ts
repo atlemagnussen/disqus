@@ -141,7 +141,7 @@ export class SearchView extends LitElement {
                     <input placeholder="content" type="text" value="" @input=${this.contentChanged} @keypress=${this.keyPressEvent} />
                     <forum-selector @change=${this.selectChangeEvent}></forum-selector>
                     <search-button @click=${this.search}></search-button>
-                    <favorite-searches title="click to save favorite search"
+                    <favorite-searches
                         @starclicked=${this.saveFavorite} 
                         @selectedfavorite=${this.selectedFavorite}>
                     </favorite-searches>
