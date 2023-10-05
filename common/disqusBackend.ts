@@ -1,6 +1,10 @@
 import http from "@common/backendHttp"
 import { CommentsStatsDay, DisqusForumInfo, DisqusUsersResponse, ForumRequest, PaginatedComments, SearchRequest } from "@common/types"
 
+export function searchPostsBase(req: SearchRequest) {
+    return http.post<PaginatedComments>("getcommentsby", req)
+}
+
 export function searchPosts(forum: string, page: number, pageSize: number, username?: string, authorname?: string, text?: string) {
     const data: SearchRequest = {
         forum, username, authorname, text,
@@ -9,7 +13,7 @@ export function searchPosts(forum: string, page: number, pageSize: number, usern
             pageSize
         }
     }
-    return http.post<PaginatedComments>("getcommentsby", data)
+    return searchPostsBase(data)
 }
 
 export function getPostsByThread(forum: string, thread: string, page: number, pageSize: number) {

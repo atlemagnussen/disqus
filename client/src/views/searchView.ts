@@ -1,8 +1,10 @@
-import { PaginatedComments } from "@common/types"
+import { PaginatedComments, SearchRequest } from "@common/types"
 import { LitElement, css, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
-import { searchPosts } from "@common/disqusBackend"
+import { searchPostsBase } from "@common/disqusBackend"
 import { scrollToTop } from "@app/services/helpers"
+import { saveSearchRequest } from "@app/storage/database"
+import { SavedSearchRequest } from "@common/models"
 
 @customElement('search-view')
 export class SearchView extends LitElement {
@@ -41,26 +43,31 @@ export class SearchView extends LitElement {
         super.connectedCallback()
         scrollToTop()
     }
-
-    private userName = "RadonReady"
-    private authorName = ""
-    private content = ""
-    private forum = "itavisen"
     
     @state()
     searching = false
 
+    searchRequest: SearchRequest = {
+        forum: "itavisen",
+        username: "",
+        authorname: "",
+        text: "",
+        pagination: {
+            page: 1,
+            pageSize: 1000
+        }
+    }
     usernameChanged(e: any) {
-        this.userName = e.target.value
+        this.searchRequest.username = e.target.value
     }
     authorNameChanged(e: any) {
-        this.authorName = e.target.value
+        this.searchRequest.authorname = e.target.value
     }
     contentChanged(e: any) {
-        this.content = e.target.value
+        this.searchRequest.text = e.target.value
     }
     selectChangeEvent(e: any) {
-        this.forum = e.target.value
+        this.searchRequest.forum = e.target.value
     }
     keyPressEvent(e: any) {
         if (e.key === "Enter") {
@@ -71,8 +78,10 @@ export class SearchView extends LitElement {
     async search() {
         this.error = ""
         this.searching = true
+        if (this.comments)
+            this.comments.data = []
         try {
-            const res = await searchPosts(this.forum, this.page, this.pagesize, this.userName, this.authorName, this.content)
+            const res = await searchPostsBase(this.searchRequest)
             this.comments = res
         }
         catch(error: any) {
@@ -84,15 +93,35 @@ export class SearchView extends LitElement {
         }
     }
 
-    page = 1
     pageNumChanged(e: CustomEvent) {
-        this.page = e.detail as number
-        this.search()
+        if (this.searchRequest.pagination) {
+            this.searchRequest.pagination.page = e.detail as number
+            this.search()
+        }
     }
-    pagesize = 1000
+    
     pageSizeChanged(e: CustomEvent) {
-        this.pagesize = e.detail as number
-        this.search()
+        if (this.searchRequest.pagination) {
+            this.searchRequest.pagination.pageSize = e.detail as number
+            this.search()
+        }
+    }
+
+    saveFavorite() {
+        const nameOfFav = prompt("Please enter a name for this favorite search")
+        if (!nameOfFav) {
+            alert("need a string!")
+            return
+        }
+        saveSearchRequest(nameOfFav, this.searchRequest)
+    }
+
+    selectedFavorite(e: CustomEvent) {
+        const req = e.detail as SavedSearchRequest | null
+        if (req) {
+            this.searchRequest = req
+            this.search()
+        }
     }
 
     private error = ""
@@ -107,17 +136,24 @@ export class SearchView extends LitElement {
             
             <div class="wrapper">
                 <div class="search">
-                    <input placeholder="author username" type="text" value="RadonReady" @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
-                    <input placeholder="author name" type="text" value="" @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author username" type="text" .value=${this.searchRequest.username!} @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author name" type="text" .value=${this.searchRequest.authorname!} @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
                     <input placeholder="content" type="text" value="" @input=${this.contentChanged} @keypress=${this.keyPressEvent} />
                     <forum-selector @change=${this.selectChangeEvent}></forum-selector>
                     <search-button @click=${this.search}></search-button>
-                    ${this.error ? html`
-                        <span class="error">${this.error}</span>
-                    ` : html``}
+                    <favorite-searches title="click to save favorite search"
+                        @starclicked=${this.saveFavorite} 
+                        @selectedfavorite=${this.selectedFavorite}>
+                    </favorite-searches>
+                    
                 </div>
                 <div class="result">
-                    ${this.renderContent()}
+                    ${this.error ? html`
+                        <span class="error">${this.error}</span>
+                    ` :
+                        this.renderContent()
+                    }
+                    
                 </div>
                 
             </div>
@@ -129,14 +165,14 @@ export class SearchView extends LitElement {
     }
     renderContent() {
         
-        if (!this.comments || this.comments.pagination.totalCount == 0)
+        if ((!this.comments || this.comments.data.length === 0) && !this.searching)
             return html`<h2>No entries, try to perform a search!</h2>`
         
         return html`
-            <h3>Found ${this.comments.pagination.totalCount}, showing ${this.comments?.data.length} comments from page ${this.comments.pagination.page}</h3>
+            <h3>Found ${this.comments?.pagination.totalCount}, showing ${this.comments?.data.length} comments from page ${this.comments?.pagination.page}</h3>
             <pager-element 
                 total=${this.comments?.pagination.totalCount!}
-                currentpage=${this.page}
+                currentpage=${this.searchRequest.pagination?.page!}
                 @page-num-changed=${this.pageNumChanged}
                 @page-size-changed=${this.pageSizeChanged}>
             </pager-element>

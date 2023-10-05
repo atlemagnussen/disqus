@@ -11,6 +11,7 @@
     --yellow: #fbff00;
     --yellow-medium: #ffea00;
     --yellow-dark: #9b9101;
+    --gold-color: #F8D64E;
 
     --purple: rgb(198, 9, 255);
     --magenta: rgb(255, 0, 255);
@@ -23,6 +24,7 @@
     --cardinal-blue: rgb(196, 30, 90);
     --cardinal-hover: rgb(196, 30, 90, 0.3);
 
+    --grey: #8a8888;
 
     --peach: #FF96AB;
     --peach-dark: #F27B7F;
