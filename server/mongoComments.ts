@@ -105,6 +105,9 @@ function getMatchQuery(s: SearchRequest) {
     if (s.thread)
         expressions.push({thread: s.thread })
 
+    if (s.userid)
+        expressions.push({"author.id": s.userid})
+
     if (s.authorname)
         expressions.push({"author.name": s.authorname})
 

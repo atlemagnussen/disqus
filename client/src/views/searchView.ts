@@ -51,6 +51,7 @@ export class SearchView extends LitElement {
         forum: "itavisen",
         username: "",
         authorname: "",
+        userid: "",
         text: "",
         pagination: {
             page: 1,
@@ -62,6 +63,9 @@ export class SearchView extends LitElement {
     }
     authorNameChanged(e: any) {
         this.searchRequest.authorname = e.target.value
+    }
+    authorIdChanged(e: any) {
+        this.searchRequest.userid = e.target.value
     }
     contentChanged(e: any) {
         this.searchRequest.text = e.target.value
@@ -136,8 +140,9 @@ export class SearchView extends LitElement {
             
             <div class="wrapper">
                 <div class="search">
-                    <input placeholder="author username" type="text" .value=${this.searchRequest.username!} @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
-                    <input placeholder="author name" type="text" .value=${this.searchRequest.authorname!} @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author username" type="text" .value=${this.searchRequest.username ?? ""} @input=${this.usernameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author name" type="text" .value=${this.searchRequest.authorname ?? ""} @input=${this.authorNameChanged} @keypress=${this.keyPressEvent} />
+                    <input placeholder="author ID" type="text" .value=${this.searchRequest.userid ?? ""} @input=${this.authorIdChanged} @keypress=${this.keyPressEvent} />
                     <input placeholder="content" type="text" value="" @input=${this.contentChanged} @keypress=${this.keyPressEvent} />
                     <forum-selector @change=${this.selectChangeEvent}></forum-selector>
                     <search-button @click=${this.search}></search-button>

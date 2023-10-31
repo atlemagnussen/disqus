@@ -40,6 +40,7 @@ export interface DisqusUser {
 }
 
 export interface DisqusAuthor {
+    id: string
     username: string
     name: string
 }
@@ -56,6 +57,7 @@ export interface DisqusForumInfo {
 export interface SearchRequest {
     forum: string
     thread?: string
+    userid?: string
     username?: string
     authorname?: string
     text?: string

@@ -80,7 +80,7 @@ export class DisqusComment extends LitElement {
             }
             <div class="userinfo">
                 <datetime-viewer date="${this.comment.createdAt!}"></datetime-viewer>
-                <span>${this.comment.author?.name} (${this.comment.author?.username})</span>
+                <span>${this.comment.author?.name} (${this.comment.author?.username}) id: ${this.comment.author?.id}</span>
                 <span class="likes">Likes: ${this.comment.likes}</span>
                 <span class="downvotes">Downvotes: ${this.comment.dislikes}</span>
                 ${this.comment.isApproved ? html`<small>approved</small>` : html``}
