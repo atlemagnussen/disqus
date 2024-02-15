@@ -2,7 +2,7 @@ import { logger } from "./logger"
 import { getPostsFromForum } from "./disqus"
 import { SaveComment }from "./mongoComments"
 import { DisqusPostsResponse } from "@common/types"
-
+import { sleep, calcTimeDiff } from "./helpers"
 logger.info("crawler starting")
 
 const FORUM = "itavisen"
@@ -52,7 +52,8 @@ async function processFetchedPosts(res: DisqusPostsResponse) {
     return result
 }
 
-const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const startTime = new Date()
+
 console.log("-----------------------------")
 console.log("-------START CRAWLING--------")
 console.log(`-------${FORUM}--------------`)
@@ -61,6 +62,8 @@ crawl().catch(er => {
     logger.error(er)
 })
 .finally(() => {
-    logger.info("done")
+    const endTime = new Date()
+    const diff = calcTimeDiff(startTime, endTime)
+    logger.info(`Done: Job lasted for ${diff}`)
     process.exit()
 })
