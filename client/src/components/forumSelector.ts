@@ -26,6 +26,7 @@ export class ForumSelector extends LitElement {
             <select @change=${this.selectChangeEvent}>
                 <option value="itavisen">itavisen</option>
                 <option value="digi-no">digi</option>
+                <option value="documentno">Document</option>
             </select>
         `
     }
