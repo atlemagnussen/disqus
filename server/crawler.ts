@@ -21,7 +21,7 @@ async function crawl() {
         const result = await processFetchedPosts(res)
         logger.info("result of saving posts", result)
         logger.info(`Now sleep ${sleepTimeMs}ms`)
-        sleep(sleepTimeMs)
+        await sleep(sleepTimeMs)
     }
 }
 
