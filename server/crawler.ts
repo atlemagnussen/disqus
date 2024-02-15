@@ -6,6 +6,7 @@ import { DisqusPostsResponse } from "@common/types"
 logger.info("crawler starting")
 
 const FORUM = "itavisen"
+const sleepTimeMs = 10*1000
 
 async function crawl() {
     let res = await getPosts()
@@ -19,6 +20,8 @@ async function crawl() {
         res = await getPosts(res.cursor.next)
         const result = await processFetchedPosts(res)
         logger.info("result of saving posts", result)
+        logger.info(`Now sleep ${sleepTimeMs}ms`)
+        sleep(sleepTimeMs)
     }
 }
 
@@ -48,6 +51,8 @@ async function processFetchedPosts(res: DisqusPostsResponse) {
     }
     return result
 }
+
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 crawl().catch(er => {
     logger.error(er)
