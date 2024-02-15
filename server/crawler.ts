@@ -53,10 +53,14 @@ async function processFetchedPosts(res: DisqusPostsResponse) {
 }
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
-
+console.log("-----------------------------")
+console.log("-------START CRAWLING--------")
+console.log(`-------${FORUM}--------------`)
+console.log("-----------------------------")
 crawl().catch(er => {
     logger.error(er)
 })
 .finally(() => {
     logger.info("done")
+    process.exit()
 })
