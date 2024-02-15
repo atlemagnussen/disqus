@@ -3,10 +3,9 @@ import { getPostsFromForum } from "./disqus"
 import { SaveComment }from "./mongoComments"
 import { DisqusPostsResponse } from "@common/types"
 import { sleep, calcTimeDiff } from "./helpers"
-logger.info("crawler starting")
+import config from "./config"
 
-const FORUM = "itavisen"
-const sleepTimeMs = 10*1000
+logger.info("crawler starting")
 
 async function crawl() {
     let res = await getPosts()
@@ -20,13 +19,13 @@ async function crawl() {
         res = await getPosts(res.cursor.next)
         const result = await processFetchedPosts(res)
         logger.info("result of saving posts", result)
-        logger.info(`Now sleep ${sleepTimeMs}ms`)
-        await sleep(sleepTimeMs)
+        logger.info(`Now sleep ${config.sleepMs}ms`)
+        await sleep(config.sleepMs)
     }
 }
 
 async function getPosts(cursor?: string) {
-    const res = await getPostsFromForum(FORUM, cursor)
+    const res = await getPostsFromForum(config.forum, cursor)
     const resJson = JSON.parse(res) as DisqusPostsResponse
     return resJson
 }
@@ -45,7 +44,7 @@ async function processFetchedPosts(res: DisqusPostsResponse) {
 
     for (let i = 0; i < res.response.length; i++) {
         let post = res.response[i]
-        let saved = await SaveComment(FORUM, post)
+        let saved = await SaveComment(config.forum, post)
         if (saved)
             result.saved += 1
     }
@@ -56,7 +55,8 @@ const startTime = new Date()
 
 console.log("-----------------------------")
 console.log("-------START CRAWLING--------")
-console.log(`-------${FORUM}--------------`)
+console.log(`-------${config.forum}--------------`)
+console.log(`-------${config.sleepMs}ms--------------`)
 console.log("-----------------------------")
 crawl().catch(er => {
     logger.error(er)
@@ -64,6 +64,6 @@ crawl().catch(er => {
 .finally(() => {
     const endTime = new Date()
     const diff = calcTimeDiff(startTime, endTime)
-    logger.info(`Done: Job lasted for ${diff}`)
+    logger.info(`Done scraping ${config.forum}: Job lasted for ${diff}`)
     process.exit()
 })

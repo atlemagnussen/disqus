@@ -1,6 +1,9 @@
 // import { SearchRequest } from "@common/types"
 // import { searchComments } from "./mongoComments"
+import config from "./config"
 import { calcTimeDiff } from "./helpers"
+
+console.log(config)
 
 // async function main() {
 //     const req: SearchRequest = {

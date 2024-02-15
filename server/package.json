@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "prod": "cross-env NODE_ENV=prod ts-node index.ts",
-    "test": "cross-env NODE_ENV=prod ts-node test.ts",
-    "crawler": "cross-env NODE_ENV=prod ts-node crawler.ts"
+    "test": "cross-env NODE_ENV=prod FORUM=$npm_config_forum SLEEP=$npm_config_sleep ts-node test.ts",
+    "crawler": "cross-env NODE_ENV=prod FORUM=$npm_config_forum SLEEP=$npm_config_sleep ts-node crawler.ts"
   },
   "keywords": [
     "disqus",

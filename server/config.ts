@@ -20,12 +20,20 @@ const dbName = getSetting("DBNAME")
 
 const logFilePath = getSetting("LOGFILE")
 
+const forum = getSetting("FORUM")
+
+
+const sleepStr = getSetting("SLEEP")
+const sleepMs = sleepStr ? parseInt(sleepStr) : 10000
+
 export default {
     port,
     apiKey,
     mongoConnStr,
     dbName,
-    logFilePath
+    logFilePath,
+    forum,
+    sleepMs
 }
 
 function getSetting(name: string) {
