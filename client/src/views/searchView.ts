@@ -128,6 +128,9 @@ export class SearchView extends LitElement {
         }
     }
 
+    @state()
+    showReport = true
+
     private error = ""
     
     showLink = true
@@ -150,7 +153,10 @@ export class SearchView extends LitElement {
                         @starclicked=${this.saveFavorite} 
                         @selectedfavorite=${this.selectedFavorite}>
                     </favorite-searches>
-                    
+                </div>
+                <div>
+                    <label for="showreport">Copy paste mode</label>
+                    <input type="checkbox" id="showreport" .checked=${this.showReport}>
                 </div>
                 <div class="result">
                     ${this.error ? html`
@@ -165,8 +171,10 @@ export class SearchView extends LitElement {
         `
     }
     renderComments() {
-        return this.comments?.data.map(c => html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`)
-            
+        if (this.showReport)
+            return this.comments?.data.map(c => html`<disqus-comment-report .comment=${c}></disqus-comment-report>`)
+        
+        return this.comments?.data.map(c => html`<disqus-comment .comment=${c} .showlink=${this.showLink}></disqus-comment>`)    
     }
     renderContent() {
         
