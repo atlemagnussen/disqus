@@ -46,6 +46,7 @@ app.post("/api/forumlink", async (req, res) => {
     const forumReq = req.body as ForumRequest
 
     const link = await getForumLinkCached(forumReq.forum, forumReq.thread!)
+    res.setHeader("Cache-Control", "max-age=604800, public") // one week
     return res.send(link)
 })
 
