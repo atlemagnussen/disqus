@@ -1,6 +1,6 @@
 import { findDuplicates, removeDuplicates } from "./mongoComments"
 
-const FORUM = "itavisen"
+const FORUM = "forum"
 
 async function dowork() {
     const ids = await findDuplicates(FORUM)

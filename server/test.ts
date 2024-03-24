@@ -6,7 +6,7 @@ import { getForumLinkCached } from "./mongoForumLink"
 console.log(config)
 
 async function main() {
-    const forum = "itavisen"
+    const forum = "forum"
     const thread = "7028512497"
 
     const res = await getForumLinkCached(forum, thread)

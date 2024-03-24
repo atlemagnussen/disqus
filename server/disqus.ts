@@ -7,9 +7,6 @@ const BASEURL = "https://disqus.com/api/3.0"
 const THREADSURL = "/forums/listThreads.json"
 const POSTSURL = "/forums/listPosts.json"
 
-// const FORUM = "itavisen"
-// const THREADID = "6607646921";
-
 export const getForumLink = async (forum: string, thread: string) => {
     const url = `${BASEURL}${THREADSURL}?api_key=${config.apiKey}&forum=${forum}&thread=${thread}`
     const res = await getHttps(url)
