@@ -39,13 +39,20 @@ app.post("/api/getcommentsby", async (req, res) => {
     return res.send(resComments)
 })
 
-app.post("/api/forumlink", async (req, res) => {
+app.get("/api/forumlink", async (req, res) => {
     let fullpath = decodeURI(req.path)
-    console.log("requested file path", fullpath)
+    
+    ///@ts-ignore
+    const forum = req.query.forum as string
+    ///@ts-ignore
+    const thread = req.query.thread as string
+    console.log(`forum=${forum}, thread=${thread}`)
 
-    const forumReq = req.body as ForumRequest
+    if (!forum || !thread)
+        return res.status(404)
+    //const forumReq = req.body as ForumRequest
 
-    const link = await getForumLinkCached(forumReq.forum, forumReq.thread!)
+    const link = await getForumLinkCached(forum, thread)
     res.setHeader("Cache-Control", "max-age=604800, public") // one week
     return res.send(link)
 })

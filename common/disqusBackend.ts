@@ -28,10 +28,8 @@ export function getPostsByThread(forum: string, thread: string, page: number, pa
 }
 
 export function getForumInfo(forum: string, thread: string) {
-    const data: ForumRequest = {
-        forum, thread
-    }
-    return http.post<DisqusForumInfo>("forumlink", data)
+    const url = `forumlink?forum=${forum}&thread=${thread}`
+    return http.get<DisqusForumInfo>(url)
 }
 
 export function getStats(forum: string) {
