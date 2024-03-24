@@ -129,8 +129,11 @@ export class SearchView extends LitElement {
     }
 
     @state()
-    showReport = true
+    showReport = false
 
+    showReportChangeEvent(e: any) {
+        this.showReport = e.target.checked
+    }
     private error = ""
     
     showLink = true
@@ -156,7 +159,7 @@ export class SearchView extends LitElement {
                 </div>
                 <div>
                     <label for="showreport">Copy paste mode</label>
-                    <input type="checkbox" id="showreport" .checked=${this.showReport}>
+                    <input type="checkbox" id="showreport" .checked=${this.showReport} @change=${this.showReportChangeEvent}>
                 </div>
                 <div class="result">
                     ${this.error ? html`

@@ -46,6 +46,8 @@ export interface DisqusAuthor {
 }
 
 export interface DisqusForumInfo {
+    forum: string
+    id: string
     title: string
     clean_title: string
     signedLink: string

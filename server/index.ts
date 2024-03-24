@@ -2,9 +2,10 @@ import path from "path"
 import express from "express"
 import { searchComments } from "./mongoComments"
 import { getCommentStats } from "./mongoStats"
-import { getForumLink, mostActiveUsers, mostLikedUsers } from "./disqus"
+import { mostActiveUsers, mostLikedUsers } from "./disqus"
+import { getForumLinkCached } from "./mongoForumLink"
 import bodyParser from "body-parser"
-import { DisqusCommentItem, DisqusUsersResponse, ForumRequest, PaginatedComments, SearchRequest } from "@common/types"
+import { DisqusUsersResponse, ForumRequest, PaginatedComments, SearchRequest } from "@common/types"
 import config from "./config"
 
 const app = express()
@@ -44,7 +45,7 @@ app.post("/api/forumlink", async (req, res) => {
 
     const forumReq = req.body as ForumRequest
 
-    const link = await getForumLink(forumReq.forum, forumReq.thread!)
+    const link = await getForumLinkCached(forumReq.forum, forumReq.thread!)
     return res.send(link)
 })
 

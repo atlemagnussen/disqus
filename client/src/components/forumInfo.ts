@@ -41,7 +41,7 @@ export class ForumInfo extends LitElement {
     }
 
     @state()
-    forumInfo: DisqusForumInfo = { title: "", clean_title: "", signedLink: "", link: "", slug: "", posts: 0 }
+    forumInfo: DisqusForumInfo = {id: "", forum: "", title: "", clean_title: "", signedLink: "", link: "", slug: "", posts: 0 }
 
     render() {
         
