@@ -5,6 +5,7 @@ import { searchPostsBase } from "@common/disqusBackend"
 import { scrollToTop } from "@app/services/helpers"
 import { saveSearchRequest } from "@app/storage/database"
 import { SavedSearchRequest } from "@common/models"
+import { forums } from "@app/services/config"
 
 @customElement('search-view')
 export class SearchView extends LitElement {
@@ -48,7 +49,7 @@ export class SearchView extends LitElement {
     searching = false
 
     searchRequest: SearchRequest = {
-        forum: "itavisen",
+        forum: forums[0],
         username: "",
         authorname: "",
         userid: "",

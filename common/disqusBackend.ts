@@ -1,6 +1,10 @@
 import http from "@common/backendHttp"
 import { CommentsStatsDay, DisqusForumInfo, DisqusUsersResponse, ForumRequest, PaginatedComments, SearchRequest } from "@common/types"
 
+export function getForums() {
+    return http.get<string[]>("forums")
+}
+
 export function searchPostsBase(req: SearchRequest) {
     return http.post<PaginatedComments>("getcommentsby", req)
 }

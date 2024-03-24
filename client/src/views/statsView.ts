@@ -5,6 +5,7 @@ import { getStats } from "@common/disqusBackend"
 import { CommentsStatsDay } from "@common/types"
 import { getChart, updateChart } from "./highCharts"
 import { Chart } from "highcharts"
+import { forums } from "@app/services/config"
 
 @customElement('stats-view')
 export class StatsView extends LitElement {
@@ -21,7 +22,7 @@ export class StatsView extends LitElement {
             flex: 1 1 auto 
         }
     `
-    forum = "itavisen"
+    forum = forums[0]
     async selectChangeEvent(e: any) {
         this.forum = e.target.value
         const stats = await getStats(this.forum)

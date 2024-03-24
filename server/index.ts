@@ -38,7 +38,10 @@ app.post("/api/getcommentsby", async (req, res) => {
     }
     return res.send(resComments)
 })
-
+app.get("/api/forums", async (req, res) => {
+    res.setHeader("Cache-Control", "max-age=604800, public")
+    res.send(config.forums)
+})
 app.get("/api/forumlink", async (req, res) => {
     let fullpath = decodeURI(req.path)
     

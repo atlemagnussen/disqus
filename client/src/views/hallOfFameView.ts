@@ -2,7 +2,7 @@ import { LitElement, css, html } from "lit"
 import { customElement, state } from "lit/decorators.js"
 import { mostActiveUsers, mostLikedUsers } from "@common/disqusBackend"
 import { DisqusUser } from "@common/types"
-
+import { forums } from "@app/services/config"
 
 @customElement('hall-view')
 export class HallView extends LitElement {
@@ -28,7 +28,7 @@ export class HallView extends LitElement {
     @state()
     mostLikedUsers: DisqusUser[] = []
 
-    forum = "itavisen"
+    forum = forums[0]
     async selectChangeEvent(e: any) {
         this.forum = e.target.value
         this.fetchData()

@@ -1,6 +1,6 @@
 import { LitElement, css, html } from "lit"
 import { customElement, property } from "lit/decorators.js"
-
+import { forums } from "@app/services/config"
 
 @customElement('forum-selector')
 export class ForumSelector extends LitElement {
@@ -10,7 +10,7 @@ export class ForumSelector extends LitElement {
         }
     `
     @property({attribute: true})
-    value = "itavisen"
+    value = forums[0]
 
     selectChangeEvent(e: any) {
         this.value = e.target.value
@@ -24,9 +24,9 @@ export class ForumSelector extends LitElement {
         
         return html`
             <select @change=${this.selectChangeEvent}>
-                <option value="itavisen">itavisen</option>
-                <option value="digi-no">digi</option>
-                <option value="documentno">Document</option>
+                ${forums.map(f => {
+                    return html`<option value="${f}">${f}</option>`
+                })}
             </select>
         `
     }

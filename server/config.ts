@@ -22,6 +22,15 @@ const logFilePath = getSetting("LOGFILE")
 
 const forum = getSetting("FORUM")
 
+const forumsStr = getSetting("FORUMS")
+let forums: string[] = []
+if (forumsStr) {
+    if (forumsStr.includes(",")) {
+        forums = forumsStr.split(",")
+    }
+    else 
+        forums.push(forumsStr)
+}
 
 const sleepStr = getSetting("SLEEP")
 const sleepMs = sleepStr ? parseInt(sleepStr) : 10000
@@ -33,6 +42,7 @@ export default {
     dbName,
     logFilePath,
     forum,
+    forums,
     sleepMs
 }
 
