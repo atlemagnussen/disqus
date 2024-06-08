@@ -4,7 +4,9 @@
   "description": "disqus-server",
   "main": "index.js",
   "scripts": {
-    "prod": "cross-env NODE_ENV=prod ts-node index.ts",
+    "build": "tsc",
+    "prod": "cross-env NODE_ENV=prod node dist/server/index.js",
+    "prod:ts": "cross-env NODE_ENV=prod ts-node index.ts",
     "test": "cross-env NODE_ENV=prod FORUM=$npm_config_forum SLEEP=$npm_config_sleep ts-node test.ts",
     "crawler": "cross-env NODE_ENV=prod FORUM=$npm_config_forum SLEEP=$npm_config_sleep ts-node crawler.ts"
   },

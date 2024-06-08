@@ -1,14 +1,18 @@
 {
-    // This is an alias to @tsconfig/node16: https://github.com/tsconfig/bases
-    "extends": "ts-node/node16/tsconfig.json",
-    "ts-node": {
-        "transpileOnly": false,
-        "files": true,
-        "compilerOptions": {
-            "noImplicitAny": true
-        }
-    },
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Node 20",
+    "_version": "20.1.0",
+  
     "compilerOptions": {
+        "lib": ["es2023"],
+        "module": "node16",
+        "target": "es2022",
+  
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "moduleResolution": "node16",
+
         "outDir": "dist",
         "baseUrl": ".",
         "paths": {
