@@ -10,7 +10,7 @@ const log4jsConfig: log4js.Configuration = {
     },
     "categories": {
         "default": {
-            "appenders": ["toDateFile", "console"],
+            "appenders": ["console"],
             "level": "debug"
         }
     }
@@ -21,6 +21,7 @@ if (config.environment != "production") {
         "type": "dateFile",
         "filename": config.logFilePath
     }
+    log4jsConfig.categories.default.appenders.push("toDateFile")
 }
 
 log4js.configure(log4jsConfig)
