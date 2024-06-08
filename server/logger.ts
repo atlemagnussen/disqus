@@ -2,12 +2,8 @@ import config from "./config"
 
 import log4js from "log4js"
 
-const log4jsConfig = {
+const log4jsConfig: log4js.Configuration = {
     "appenders": {
-        "toDateFile": {
-            "type": "dateFile",
-            "filename": config.logFilePath
-        },
         "console": {
             "type": "console"
         }
@@ -17,6 +13,13 @@ const log4jsConfig = {
             "appenders": ["toDateFile", "console"],
             "level": "debug"
         }
+    }
+}
+
+if (config.environment != "production") {
+    log4jsConfig.appenders["toDateFile"] = {
+        "type": "dateFile",
+        "filename": config.logFilePath
     }
 }
 

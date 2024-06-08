@@ -38,6 +38,7 @@ const sleepStr = getSetting("SLEEP")
 const sleepMs = sleepStr ? parseInt(sleepStr) : 10000
 
 export default {
+    environment,
     port,
     apiKey,
     mongoConnStr,
